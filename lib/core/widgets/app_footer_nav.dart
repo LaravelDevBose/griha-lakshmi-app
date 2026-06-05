@@ -50,7 +50,7 @@ class AppFooterNav extends StatelessWidget {
                 icon: Icons.receipt_long_rounded,
                 tab: AppFooterTab.expense,
                 currentTab: currentTab,
-                routeName: AppRoutes.addExpense,
+                routeName: AppRoutes.transactions,
               ),
               _FooterNavItem(
                 icon: Icons.bar_chart_rounded,

@@ -61,6 +61,11 @@ class AppSidebarDrawer extends StatelessWidget {
                         routeName: AppRoutes.home,
                       ),
                       _DrawerItem(
+                        icon: Icons.list_rounded,
+                        title: 'Transactions',
+                        routeName: AppRoutes.transactions,
+                      ),
+                      _DrawerItem(
                         icon: Icons.add_card_rounded,
                         title: 'Add Income',
                         routeName: AppRoutes.addIncome,
