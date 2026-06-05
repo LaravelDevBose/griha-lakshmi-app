@@ -51,10 +51,13 @@ class AppTheme {
       backgroundColor: AppColors.background,
       foregroundColor: AppColors.textPrimary,
       elevation: 0,
+      scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
+      shadowColor: Colors.transparent,
       centerTitle: true,
       titleTextStyle: TextStyle(
         fontSize: 18,
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w800,
         color: AppColors.textPrimary,
       ),
       iconTheme: IconThemeData(
@@ -66,23 +69,23 @@ class AppTheme {
       headlineLarge: TextStyle(
         color: AppColors.textPrimary,
         fontSize: 32,
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w800,
         letterSpacing: -0.5,
       ),
       headlineMedium: TextStyle(
         color: AppColors.textPrimary,
         fontSize: 26,
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w800,
       ),
       titleLarge: TextStyle(
         color: AppColors.textPrimary,
         fontSize: 20,
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w800,
       ),
       titleMedium: TextStyle(
         color: AppColors.textPrimary,
         fontSize: 16,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w700,
       ),
       bodyLarge: TextStyle(
         color: AppColors.textPrimary,
@@ -116,7 +119,7 @@ class AppTheme {
         ),
         textStyle: const TextStyle(
           fontSize: 16,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w800,
         ),
       ),
     ),
@@ -137,7 +140,7 @@ class AppTheme {
         ),
         textStyle: const TextStyle(
           fontSize: 15,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
         ),
       ),
     ),
@@ -147,7 +150,7 @@ class AppTheme {
         foregroundColor: AppColors.primary,
         textStyle: const TextStyle(
           fontSize: 14,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
         ),
       ),
     ),
@@ -166,7 +169,7 @@ class AppTheme {
       ),
       labelStyle: const TextStyle(
         color: AppColors.textPrimary,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
@@ -199,6 +202,7 @@ class AppTheme {
     cardTheme: CardThemeData(
       color: AppColors.cardBackground,
       elevation: 0,
+      surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
         side: const BorderSide(
@@ -232,7 +236,7 @@ class AppTheme {
       ),
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
       ),
     ),
 
@@ -243,12 +247,17 @@ class AppTheme {
       type: BottomNavigationBarType.fixed,
       selectedLabelStyle: TextStyle(
         fontSize: 12,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w700,
       ),
       unselectedLabelStyle: TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.w500,
       ),
+    ),
+
+    dividerTheme: const DividerThemeData(
+      color: AppColors.divider,
+      thickness: 1,
     ),
   );
 }

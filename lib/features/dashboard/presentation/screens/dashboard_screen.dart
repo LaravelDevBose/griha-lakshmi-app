@@ -69,6 +69,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       showDrawer: true,
       showFooter: true,
       footerTab: AppFooterTab.home,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       body: _buildBody(),
     );
   }
@@ -137,6 +138,8 @@ class _DashboardContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const SizedBox(height: 8),
+
         _DashboardGreeting(
           month: dashboard.month,
           todayCount: dashboard.todayReminders.length,
@@ -164,7 +167,7 @@ class _DashboardContent extends StatelessWidget {
           transactions: dashboard.recentTransactions,
         ),
 
-        const SizedBox(height: 26),
+        const SizedBox(height: 92),
       ],
     );
   }
@@ -181,67 +184,81 @@ class _DashboardGreeting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
-      padding: const EdgeInsets.all(18),
-      backgroundColor: AppColors.primary,
-      borderColor: AppColors.primary,
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Hello, Arup',
-                  style: TextStyle(
-                    color: AppColors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-
-                const SizedBox(height: 5),
-
-                Text(
-                  month,
-                  style: TextStyle(
-                    color: AppColors.white.withOpacity(0.80),
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-
-                if (todayCount > 0) ...[
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 6,
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(
+        begin: 0.96,
+        end: 1,
+      ),
+      duration: const Duration(milliseconds: 450),
+      curve: Curves.easeOutBack,
+      builder: (context, value, child) {
+        return Transform.scale(
+          scale: value,
+          child: child,
+        );
+      },
+      child: AppCard(
+        padding: const EdgeInsets.all(18),
+        backgroundColor: AppColors.primary,
+        borderColor: AppColors.primary,
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Hello, Arup',
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w900,
                     ),
-                    decoration: BoxDecoration(
-                      color: AppColors.white.withOpacity(0.14),
-                      borderRadius: BorderRadius.circular(100),
+                  ),
+
+                  const SizedBox(height: 5),
+
+                  Text(
+                    month,
+                    style: TextStyle(
+                      color: AppColors.white.withOpacity(0.80),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
                     ),
-                    child: Text(
-                      '$todayCount item${todayCount > 1 ? 's' : ''} need attention today',
-                      style: const TextStyle(
-                        color: AppColors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w800,
+                  ),
+
+                  if (todayCount > 0) ...[
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.white.withOpacity(0.14),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: Text(
+                        '$todayCount item${todayCount > 1 ? 's' : ''} need attention today',
+                        style: const TextStyle(
+                          color: AppColors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
 
-          AppIconBox(
-            icon: Icons.family_restroom_rounded,
-            backgroundColor: AppColors.white.withOpacity(0.14),
-            iconColor: AppColors.white,
-          ),
-        ],
+            AppIconBox(
+              icon: Icons.family_restroom_rounded,
+              backgroundColor: AppColors.white.withOpacity(0.14),
+              iconColor: AppColors.white,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -262,46 +279,53 @@ class _SummaryGrid extends StatelessWidget {
       builder: (context, constraints) {
         final bool useTwoColumns = constraints.maxWidth >= 340;
 
+        final List<Widget> cards = [
+          SummaryCard(
+            title: 'Income',
+            amount: summary.totalIncome,
+            icon: Icons.trending_up_rounded,
+            amountType: AmountTextType.income,
+            iconBackgroundColor: AppColors.success.withOpacity(0.10),
+            iconColor: AppColors.success,
+            subtitle: 'This month',
+          ),
+          SummaryCard(
+            title: 'Expense',
+            amount: summary.totalExpense,
+            icon: Icons.trending_down_rounded,
+            amountType: AmountTextType.expense,
+            iconBackgroundColor: AppColors.danger.withOpacity(0.10),
+            iconColor: AppColors.danger,
+            subtitle: 'This month',
+          ),
+          SummaryCard(
+            title: 'Balance',
+            amount: summary.remainingBalance,
+            icon: Icons.account_balance_wallet_rounded,
+            amountType: AmountTextType.normal,
+            subtitle: 'Remaining',
+          ),
+          SummaryCard(
+            title: 'Savings',
+            amount: summary.totalSavings,
+            icon: Icons.savings_outlined,
+            amountType: AmountTextType.warning,
+            iconBackgroundColor: AppColors.warning.withOpacity(0.10),
+            iconColor: AppColors.warning,
+            subtitle: 'Saved',
+          ),
+        ];
+
         if (!useTwoColumns) {
           return Column(
-            children: [
-              SummaryCard(
-                title: 'Income',
-                amount: summary.totalIncome,
-                icon: Icons.trending_up_rounded,
-                amountType: AmountTextType.income,
-                iconBackgroundColor: AppColors.success.withOpacity(0.10),
-                iconColor: AppColors.success,
-                subtitle: 'This month',
-              ),
-              const SizedBox(height: 10),
-              SummaryCard(
-                title: 'Expense',
-                amount: summary.totalExpense,
-                icon: Icons.trending_down_rounded,
-                amountType: AmountTextType.expense,
-                iconBackgroundColor: AppColors.danger.withOpacity(0.10),
-                iconColor: AppColors.danger,
-                subtitle: 'This month',
-              ),
-              const SizedBox(height: 10),
-              SummaryCard(
-                title: 'Balance',
-                amount: summary.remainingBalance,
-                icon: Icons.account_balance_wallet_rounded,
-                subtitle: 'Remaining',
-              ),
-              const SizedBox(height: 10),
-              SummaryCard(
-                title: 'Savings',
-                amount: summary.totalSavings,
-                icon: Icons.savings_outlined,
-                amountType: AmountTextType.warning,
-                iconBackgroundColor: AppColors.warning.withOpacity(0.10),
-                iconColor: AppColors.warning,
-                subtitle: 'Saved',
-              ),
-            ],
+            children: cards
+                .map(
+                  (card) => Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: card,
+                  ),
+                )
+                .toList(),
           );
         }
 
@@ -309,54 +333,17 @@ class _SummaryGrid extends StatelessWidget {
           children: [
             Row(
               children: [
-                Expanded(
-                  child: SummaryCard(
-                    title: 'Income',
-                    amount: summary.totalIncome,
-                    icon: Icons.trending_up_rounded,
-                    amountType: AmountTextType.income,
-                    iconBackgroundColor: AppColors.success.withOpacity(0.10),
-                    iconColor: AppColors.success,
-                    subtitle: 'This month',
-                  ),
-                ),
+                Expanded(child: cards[0]),
                 const SizedBox(width: 10),
-                Expanded(
-                  child: SummaryCard(
-                    title: 'Expense',
-                    amount: summary.totalExpense,
-                    icon: Icons.trending_down_rounded,
-                    amountType: AmountTextType.expense,
-                    iconBackgroundColor: AppColors.danger.withOpacity(0.10),
-                    iconColor: AppColors.danger,
-                    subtitle: 'This month',
-                  ),
-                ),
+                Expanded(child: cards[1]),
               ],
             ),
             const SizedBox(height: 10),
             Row(
               children: [
-                Expanded(
-                  child: SummaryCard(
-                    title: 'Balance',
-                    amount: summary.remainingBalance,
-                    icon: Icons.account_balance_wallet_rounded,
-                    subtitle: 'Remaining',
-                  ),
-                ),
+                Expanded(child: cards[2]),
                 const SizedBox(width: 10),
-                Expanded(
-                  child: SummaryCard(
-                    title: 'Savings',
-                    amount: summary.totalSavings,
-                    icon: Icons.savings_outlined,
-                    amountType: AmountTextType.warning,
-                    iconBackgroundColor: AppColors.warning.withOpacity(0.10),
-                    iconColor: AppColors.warning,
-                    subtitle: 'Saved',
-                  ),
-                ),
+                Expanded(child: cards[3]),
               ],
             ),
           ],
@@ -390,9 +377,15 @@ class _UpcomingReminderSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionHeader(
+        SectionHeader(
           title: 'Upcoming',
           subtitle: 'Bills and purchase reminders.',
+          actionText: sortedReminders.length > 3 ? 'View All' : null,
+          onActionTap: sortedReminders.length > 3
+              ? () {
+                  Navigator.pushNamed(context, AppRoutes.bills);
+                }
+              : null,
         ),
 
         const SizedBox(height: 12),
@@ -436,6 +429,8 @@ class _UpcomingReminderSection extends StatelessWidget {
         return Icons.wifi_rounded;
       case 'rent':
         return Icons.home_outlined;
+      case 'medical':
+        return Icons.medical_services_outlined;
       default:
         return Icons.notifications_none_rounded;
     }
@@ -454,9 +449,15 @@ class _ExpenseCategorySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionHeader(
+        SectionHeader(
           title: 'This Month Expenses',
           subtitle: 'Compact budget progress.',
+          actionText: categories.length > 4 ? 'View All' : null,
+          onActionTap: categories.length > 4
+              ? () {
+                  Navigator.pushNamed(context, AppRoutes.reports);
+                }
+              : null,
         ),
 
         const SizedBox(height: 12),
@@ -501,6 +502,8 @@ class _ExpenseCategorySection extends StatelessWidget {
         return Icons.medical_services_outlined;
       case 'family':
         return Icons.family_restroom_rounded;
+      case 'wifi':
+        return Icons.wifi_rounded;
       default:
         return Icons.category_outlined;
     }
@@ -513,6 +516,8 @@ class _ExpenseCategorySection extends StatelessWidget {
       case 'electricity':
         return AppColors.warning;
       case 'family':
+        return AppColors.info;
+      case 'wifi':
         return AppColors.info;
       default:
         return AppColors.primary;
@@ -532,9 +537,15 @@ class _RecentTransactionSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionHeader(
+        SectionHeader(
           title: 'Recent Transactions',
           subtitle: 'Latest records.',
+          actionText: transactions.length > 4 ? 'View All' : null,
+          onActionTap: transactions.length > 4
+              ? () {
+                  Navigator.pushNamed(context, AppRoutes.reports);
+                }
+              : null,
         ),
 
         const SizedBox(height: 12),
@@ -579,6 +590,8 @@ class _RecentTransactionSection extends StatelessWidget {
         return Icons.shopping_cart_outlined;
       case 'medical':
         return Icons.medical_services_outlined;
+      case 'wifi':
+        return Icons.wifi_rounded;
       default:
         return Icons.receipt_long_outlined;
     }

@@ -21,59 +21,48 @@ class AppFooterNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.fromLTRB(18, 0, 18, 14),
       decoration: BoxDecoration(
-        color: AppColors.white,
-        border: const Border(
-          top: BorderSide(
-            color: AppColors.border,
-          ),
-        ),
+        color: AppColors.textPrimary,
+        borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: AppColors.black.withOpacity(0.04),
-            blurRadius: 18,
-            offset: const Offset(0, -8),
+            color: AppColors.black.withOpacity(0.16),
+            blurRadius: 28,
+            offset: const Offset(0, 12),
           ),
         ],
       ),
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 66,
+          height: 68,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _FooterItem(
+              _FooterNavItem(
                 icon: Icons.home_rounded,
                 tab: AppFooterTab.home,
                 currentTab: currentTab,
-                onTap: () {
-                  _goToRoute(context, AppRoutes.home);
-                },
+                routeName: AppRoutes.home,
               ),
-              _FooterItem(
+              _FooterNavItem(
                 icon: Icons.receipt_long_rounded,
                 tab: AppFooterTab.expense,
                 currentTab: currentTab,
-                onTap: () {
-                  _goToRoute(context, AppRoutes.addExpense);
-                },
+                routeName: AppRoutes.addExpense,
               ),
-              _FooterItem(
+              _FooterNavItem(
                 icon: Icons.bar_chart_rounded,
                 tab: AppFooterTab.report,
                 currentTab: currentTab,
-                onTap: () {
-                  _goToRoute(context, AppRoutes.reports);
-                },
+                routeName: AppRoutes.reports,
               ),
-              _FooterItem(
+              _FooterNavItem(
                 icon: Icons.person_rounded,
                 tab: AppFooterTab.profile,
                 currentTab: currentTab,
-                onTap: () {
-                  _goToRoute(context, AppRoutes.profile);
-                },
+                routeName: AppRoutes.profile,
               ),
             ],
           ),
@@ -81,53 +70,115 @@ class AppFooterNav extends StatelessWidget {
       ),
     );
   }
-
-  void _goToRoute(BuildContext context, String routeName) {
-    final String? currentRoute = ModalRoute.of(context)?.settings.name;
-
-    if (currentRoute == routeName) return;
-
-    Navigator.pushReplacementNamed(
-      context,
-      routeName,
-    );
-  }
 }
 
-class _FooterItem extends StatelessWidget {
-  const _FooterItem({
+class _FooterNavItem extends StatefulWidget {
+  const _FooterNavItem({
     required this.icon,
     required this.tab,
     required this.currentTab,
-    required this.onTap,
+    required this.routeName,
   });
 
   final IconData icon;
   final AppFooterTab tab;
   final AppFooterTab currentTab;
-  final VoidCallback onTap;
+  final String routeName;
+
+  @override
+  State<_FooterNavItem> createState() => _FooterNavItemState();
+}
+
+class _FooterNavItemState extends State<_FooterNavItem>
+    with SingleTickerProviderStateMixin {
+  bool _isPressed = false;
+
+  bool get _isSelected {
+    return widget.tab == widget.currentTab;
+  }
+
+  void _goToRoute() {
+    final String? currentRoute = ModalRoute.of(context)?.settings.name;
+
+    if (currentRoute == widget.routeName) return;
+
+    Navigator.pushReplacementNamed(
+      context,
+      widget.routeName,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final bool isSelected = tab == currentTab;
+    return GestureDetector(
+      onTapDown: (_) {
+        setState(() {
+          _isPressed = true;
+        });
+      },
+      onTapCancel: () {
+        setState(() {
+          _isPressed = false;
+        });
+      },
+      onTapUp: (_) {
+        setState(() {
+          _isPressed = false;
+        });
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(18),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 220),
-        width: 54,
-        height: 44,
-        decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.primary.withOpacity(0.10)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(18),
-        ),
-        child: Icon(
-          icon,
-          color: isSelected ? AppColors.primary : AppColors.textSecondary,
-          size: 25,
+        _goToRoute();
+      },
+      child: AnimatedScale(
+        scale: _isPressed ? 0.88 : 1,
+        duration: const Duration(milliseconds: 130),
+        curve: Curves.easeOut,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 260),
+          curve: Curves.easeOutCubic,
+          width: _isSelected ? 58 : 48,
+          height: 46,
+          decoration: BoxDecoration(
+            color: _isSelected
+                ? AppColors.accent
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Stack(
+            alignment: Alignment.center,
+            clipBehavior: Clip.none,
+            children: [
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 260),
+                curve: Curves.easeOutCubic,
+                top: _isSelected ? 8 : 11,
+                child: Icon(
+                  widget.icon,
+                  color: _isSelected
+                      ? AppColors.primary
+                      : AppColors.white.withOpacity(0.66),
+                  size: _isSelected ? 25 : 24,
+                ),
+              ),
+
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 260),
+                curve: Curves.easeOutCubic,
+                bottom: _isSelected ? 6 : -10,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 200),
+                  opacity: _isSelected ? 1 : 0,
+                  child: Container(
+                    width: 5,
+                    height: 5,
+                    decoration: const BoxDecoration(
+                      color: AppColors.primary,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

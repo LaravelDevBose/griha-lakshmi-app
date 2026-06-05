@@ -14,127 +14,205 @@ class AppSidebarDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: AppColors.background,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(28),
-          bottomRight: Radius.circular(28),
-        ),
-      ),
+      width: MediaQuery.sizeOf(context).width * 0.82,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
       child: SafeArea(
-        child: Column(
-          children: [
-            const _DrawerHeader(),
-
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 8,
-                ),
-                children: [
-                  _DrawerItem(
-                    icon: Icons.dashboard_rounded,
-                    title: 'Dashboard',
-                    routeName: AppRoutes.home,
-                  ),
-                  _DrawerItem(
-                    icon: Icons.add_card_rounded,
-                    title: 'Add Income',
-                    routeName: AppRoutes.addIncome,
-                  ),
-                  _DrawerItem(
-                    icon: Icons.receipt_long_rounded,
-                    title: 'Add Expense',
-                    routeName: AppRoutes.addExpense,
-                  ),
-                  _DrawerItem(
-                    icon: Icons.payments_rounded,
-                    title: 'Bills',
-                    routeName: AppRoutes.bills,
-                  ),
-                  _DrawerItem(
-                    icon: Icons.savings_rounded,
-                    title: 'Savings Goal',
-                    routeName: AppRoutes.savingsGoal,
-                  ),
-                  _DrawerItem(
-                    icon: Icons.bar_chart_rounded,
-                    title: 'Reports',
-                    routeName: AppRoutes.reports,
-                  ),
-                  _DrawerItem(
-                    icon: Icons.family_restroom_rounded,
-                    title: 'Family Members',
-                    routeName: AppRoutes.familySetup,
-                  ),
-                  _DrawerItem(
-                    icon: Icons.person_rounded,
-                    title: 'Profile',
-                    routeName: AppRoutes.profile,
-                  ),
-                ],
+        child: TweenAnimationBuilder<double>(
+          tween: Tween<double>(
+            begin: -24,
+            end: 0,
+          ),
+          duration: const Duration(milliseconds: 420),
+          curve: Curves.easeOutCubic,
+          builder: (context, value, child) {
+            return Transform.translate(
+              offset: Offset(value, 0),
+              child: child,
+            );
+          },
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(12, 8, 0, 12),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: const BorderRadius.horizontal(
+                right: Radius.circular(34),
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.black.withOpacity(0.18),
+                  blurRadius: 32,
+                  offset: const Offset(10, 12),
+                ),
+              ],
             ),
+            child: Column(
+              children: [
+                const _ModernDrawerHeader(),
 
-            Padding(
-              padding: const EdgeInsets.all(14),
-              child: _LogoutButton(),
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
+                    children: const [
+                      _DrawerSectionTitle(title: 'Main Menu'),
+                      _DrawerItem(
+                        icon: Icons.dashboard_rounded,
+                        title: 'Dashboard',
+                        routeName: AppRoutes.home,
+                      ),
+                      _DrawerItem(
+                        icon: Icons.add_card_rounded,
+                        title: 'Add Income',
+                        routeName: AppRoutes.addIncome,
+                      ),
+                      _DrawerItem(
+                        icon: Icons.receipt_long_rounded,
+                        title: 'Add Expense',
+                        routeName: AppRoutes.addExpense,
+                      ),
+                      _DrawerItem(
+                        icon: Icons.payments_rounded,
+                        title: 'Bills',
+                        routeName: AppRoutes.bills,
+                      ),
+                      _DrawerItem(
+                        icon: Icons.savings_rounded,
+                        title: 'Savings Goal',
+                        routeName: AppRoutes.savingsGoal,
+                      ),
+                      _DrawerItem(
+                        icon: Icons.bar_chart_rounded,
+                        title: 'Reports',
+                        routeName: AppRoutes.reports,
+                      ),
+
+                      SizedBox(height: 16),
+
+                      _DrawerSectionTitle(title: 'Family'),
+                      _DrawerItem(
+                        icon: Icons.family_restroom_rounded,
+                        title: 'Family Members',
+                        routeName: AppRoutes.familySetup,
+                      ),
+                      _DrawerItem(
+                        icon: Icons.person_rounded,
+                        title: 'Profile',
+                        routeName: AppRoutes.profile,
+                      ),
+                    ],
+                  ),
+                ),
+
+                const _DrawerFooter(),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _DrawerHeader extends StatelessWidget {
-  const _DrawerHeader();
+class _ModernDrawerHeader extends StatelessWidget {
+  const _ModernDrawerHeader();
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(14),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppColors.primary,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Row(
-        children: [
-          const AppIconBox(
-            icon: Icons.account_balance_wallet_rounded,
-            size: 52,
-            iconSize: 26,
-            backgroundColor: AppColors.white,
-            iconColor: AppColors.primary,
+        gradient: LinearGradient(
+          colors: [
+            AppColors.primary,
+            AppColors.primary.withOpacity(0.88),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.18),
+            blurRadius: 22,
+            offset: const Offset(0, 12),
           ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  AppConstants.appName,
-                  style: const TextStyle(
-                    color: AppColors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  AppConstants.appTagline,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: AppColors.white.withOpacity(0.78),
-                    fontSize: 12,
-                    height: 1.3,
-                  ),
-                ),
-              ],
+        ],
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: -32,
+            right: -28,
+            child: Container(
+              width: 96,
+              height: 96,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.white.withOpacity(0.08),
+              ),
             ),
+          ),
+
+          Positioned(
+            bottom: -42,
+            left: -36,
+            child: Container(
+              width: 118,
+              height: 118,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.white.withOpacity(0.07),
+              ),
+            ),
+          ),
+
+          Row(
+            children: [
+              const AppIconBox(
+                icon: Icons.account_balance_wallet_rounded,
+                size: 56,
+                iconSize: 28,
+                backgroundColor: AppColors.white,
+                iconColor: AppColors.primary,
+                borderRadius: 20,
+              ),
+
+              const SizedBox(width: 14),
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppConstants.appName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: AppColors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+
+                    const SizedBox(height: 5),
+
+                    Text(
+                      AppConstants.appTagline,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: AppColors.white.withOpacity(0.78),
+                        fontSize: 12,
+                        height: 1.35,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -142,7 +220,31 @@ class _DrawerHeader extends StatelessWidget {
   }
 }
 
-class _DrawerItem extends StatelessWidget {
+class _DrawerSectionTitle extends StatelessWidget {
+  const _DrawerSectionTitle({
+    required this.title,
+  });
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
+      child: Text(
+        title.toUpperCase(),
+        style: TextStyle(
+          color: AppColors.textSecondary.withOpacity(0.75),
+          fontSize: 11,
+          fontWeight: FontWeight.w900,
+          letterSpacing: 0.7,
+        ),
+      ),
+    );
+  }
+}
+
+class _DrawerItem extends StatefulWidget {
   const _DrawerItem({
     required this.icon,
     required this.title,
@@ -154,79 +256,171 @@ class _DrawerItem extends StatelessWidget {
   final String routeName;
 
   @override
+  State<_DrawerItem> createState() => _DrawerItemState();
+}
+
+class _DrawerItemState extends State<_DrawerItem> {
+  bool _isPressed = false;
+
+  @override
   Widget build(BuildContext context) {
     final String? currentRoute = ModalRoute.of(context)?.settings.name;
-    final bool isSelected = currentRoute == routeName;
+    final bool isSelected = currentRoute == widget.routeName;
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: ListTile(
-        selected: isSelected,
-        selectedTileColor: AppColors.accent.withOpacity(0.45),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        leading: Icon(
-          icon,
-          color: isSelected ? AppColors.primary : AppColors.textSecondary,
-        ),
-        title: Text(
-          title,
-          style: TextStyle(
-            color: isSelected ? AppColors.primary : AppColors.textPrimary,
-            fontSize: 14,
-            fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+    return AnimatedScale(
+      scale: _isPressed ? 0.98 : 1,
+      duration: const Duration(milliseconds: 120),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 6),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTapDown: (_) {
+              setState(() {
+                _isPressed = true;
+              });
+            },
+            onTapCancel: () {
+              setState(() {
+                _isPressed = false;
+              });
+            },
+            onTap: () {
+              setState(() {
+                _isPressed = false;
+              });
+
+              Navigator.pop(context);
+
+              if (currentRoute == widget.routeName) return;
+
+              Navigator.pushReplacementNamed(
+                context,
+                widget.routeName,
+              );
+            },
+            borderRadius: BorderRadius.circular(18),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOutCubic,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 12,
+              ),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? AppColors.primary.withOpacity(0.10)
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                  color: isSelected
+                      ? AppColors.primary.withOpacity(0.16)
+                      : Colors.transparent,
+                ),
+              ),
+              child: Row(
+                children: [
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 220),
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? AppColors.primary
+                          : AppColors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: isSelected
+                            ? AppColors.primary
+                            : AppColors.border,
+                      ),
+                    ),
+                    child: Icon(
+                      widget.icon,
+                      color: isSelected
+                          ? AppColors.white
+                          : AppColors.textSecondary,
+                      size: 21,
+                    ),
+                  ),
+
+                  const SizedBox(width: 12),
+
+                  Expanded(
+                    child: Text(
+                      widget.title,
+                      style: TextStyle(
+                        color: isSelected
+                            ? AppColors.primary
+                            : AppColors.textPrimary,
+                        fontSize: 14,
+                        fontWeight:
+                            isSelected ? FontWeight.w900 : FontWeight.w700,
+                      ),
+                    ),
+                  ),
+
+                  AnimatedOpacity(
+                    duration: const Duration(milliseconds: 200),
+                    opacity: isSelected ? 1 : 0,
+                    child: const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      color: AppColors.primary,
+                      size: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
-        onTap: () {
-          Navigator.pop(context);
-
-          if (currentRoute == routeName) return;
-
-          Navigator.pushReplacementNamed(
-            context,
-            routeName,
-          );
-        },
       ),
     );
   }
 }
 
-class _LogoutButton extends StatelessWidget {
+class _DrawerFooter extends StatelessWidget {
+  const _DrawerFooter();
+
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () async {
-        Navigator.pop(context);
-        await AuthGuard.logout(context);
-      },
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 14,
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.danger.withOpacity(0.10),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: const Row(
-          children: [
-            Icon(
-              Icons.logout_rounded,
-              color: AppColors.danger,
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 10, 14, 16),
+      child: InkWell(
+        onTap: () async {
+          Navigator.pop(context);
+          await AuthGuard.logout(context);
+        },
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: AppColors.danger.withOpacity(0.10),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: AppColors.danger.withOpacity(0.14),
             ),
-            SizedBox(width: 12),
-            Text(
-              'Logout',
-              style: TextStyle(
+          ),
+          child: const Row(
+            children: [
+              Icon(
+                Icons.logout_rounded,
                 color: AppColors.danger,
-                fontSize: 14,
-                fontWeight: FontWeight.w800,
+                size: 22,
               ),
-            ),
-          ],
+              SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Logout',
+                  style: TextStyle(
+                    color: AppColors.danger,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

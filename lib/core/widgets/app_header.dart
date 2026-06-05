@@ -2,33 +2,91 @@ import 'package:flutter/material.dart';
 
 import '../../app/app_constants.dart';
 import '../../app/theme.dart';
+import '../../features/notification/data/datasources/notification_remote_data_source.dart';
+import '../../features/notification/data/repositories/notification_repository_impl.dart';
+import '../../features/notification/presentation/controllers/notification_controller.dart';
+import '../api/api.dart';
 import 'app_icon_box.dart';
 import 'notification_sheet.dart';
 
-class AppHeader extends StatelessWidget implements PreferredSizeWidget {
+class AppHeader extends StatefulWidget implements PreferredSizeWidget {
   const AppHeader({
     super.key,
-    this.notificationCount = 0,
-    this.onNotificationTap,
   });
-
-  final int notificationCount;
-  final VoidCallback? onNotificationTap;
 
   @override
   Size get preferredSize => const Size.fromHeight(72);
 
   @override
+  State<AppHeader> createState() => _AppHeaderState();
+}
+
+class _AppHeaderState extends State<AppHeader>
+    with SingleTickerProviderStateMixin {
+  late final ApiClient _apiClient;
+  late final NotificationController _notificationController;
+  late final AnimationController _badgeAnimationController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _apiClient = ApiClient();
+
+    _notificationController = NotificationController(
+      notificationRepository: NotificationRepositoryImpl(
+        remoteDataSource: NotificationRemoteDataSource(
+          apiClient: _apiClient,
+        ),
+      ),
+    );
+
+    _badgeAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 350),
+      lowerBound: 0.85,
+      upperBound: 1.08,
+    );
+
+    _notificationController.addListener(_onNotificationChanged);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _notificationController.loadNotifications();
+    });
+  }
+
+  void _onNotificationChanged() {
+    if (!mounted) return;
+
+    if (_notificationController.unreadCount > 0) {
+      _badgeAnimationController.forward(from: 0.85);
+    }
+
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _notificationController.removeListener(_onNotificationChanged);
+    _notificationController.dispose();
+    _badgeAnimationController.dispose();
+    _apiClient.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      backgroundColor: AppColors.background,
-      elevation: 0,
       toolbarHeight: 72,
-      titleSpacing: 20,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      backgroundColor: AppColors.background,
+      surfaceTintColor: Colors.transparent,
+      shadowColor: Colors.transparent,
+      titleSpacing: 16,
       title: Row(
         children: [
-          // Left sidebar menu button
           Builder(
             builder: (context) {
               return _HeaderIconButton(
@@ -42,36 +100,20 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
 
           const Spacer(),
 
-          // Middle app icon
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const AppIconBox(
-                icon: Icons.account_balance_wallet_rounded,
-                size: 42,
-                iconSize: 22,
-                borderRadius: 14,
-              ),
-              const SizedBox(width: 10),
-              Text(
-                AppConstants.appName,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
-                    ),
-              ),
-            ],
-          ),
+          _HeaderBrand(),
 
           const Spacer(),
 
-          // Right notification button
           _NotificationButton(
-            count: notificationCount,
-            onTap: onNotificationTap ??
-                () {
-                  NotificationSheet.show(context);
-                },
+            count: _notificationController.unreadCount,
+            animationController: _badgeAnimationController,
+            onTap: () async {
+              await NotificationSheet.show(context);
+
+              if (!mounted) return;
+
+              await _notificationController.loadNotifications();
+            },
           ),
         ],
       ),
@@ -79,7 +121,59 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-class _HeaderIconButton extends StatelessWidget {
+class _HeaderBrand extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(
+        begin: 0.96,
+        end: 1,
+      ),
+      duration: const Duration(milliseconds: 450),
+      curve: Curves.easeOutBack,
+      builder: (context, value, child) {
+        return Transform.scale(
+          scale: value,
+          child: child,
+        );
+      },
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: AppColors.accent.withOpacity(0.55),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: const Icon(
+              Icons.account_balance_wallet_rounded,
+              color: AppColors.primary,
+              size: 20,
+            ),
+          ),
+
+          const SizedBox(width: 8),
+
+          Text(
+            AppConstants.appName,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+              letterSpacing: -0.2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HeaderIconButton extends StatefulWidget {
   const _HeaderIconButton({
     required this.icon,
     required this.onTap,
@@ -89,24 +183,60 @@ class _HeaderIconButton extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
+  State<_HeaderIconButton> createState() => _HeaderIconButtonState();
+}
+
+class _HeaderIconButtonState extends State<_HeaderIconButton> {
+  bool _isPressed = false;
+
+  @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        width: 42,
-        height: 42,
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: AppColors.border,
+    return AnimatedScale(
+      scale: _isPressed ? 0.92 : 1,
+      duration: const Duration(milliseconds: 120),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: widget.onTap,
+          onTapDown: (_) {
+            setState(() {
+              _isPressed = true;
+            });
+          },
+          onTapCancel: () {
+            setState(() {
+              _isPressed = false;
+            });
+          },
+          onTapUp: (_) {
+            setState(() {
+              _isPressed = false;
+            });
+          },
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: AppColors.border,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.black.withOpacity(0.035),
+                  blurRadius: 14,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+            ),
+            child: Icon(
+              widget.icon,
+              color: AppColors.textPrimary,
+              size: 22,
+            ),
           ),
-        ),
-        child: Icon(
-          icon,
-          color: AppColors.textPrimary,
-          size: 22,
         ),
       ),
     );
@@ -116,10 +246,12 @@ class _HeaderIconButton extends StatelessWidget {
 class _NotificationButton extends StatelessWidget {
   const _NotificationButton({
     required this.count,
+    required this.animationController,
     required this.onTap,
   });
 
   final int count;
+  final AnimationController animationController;
   final VoidCallback onTap;
 
   @override
@@ -131,29 +263,42 @@ class _NotificationButton extends StatelessWidget {
           icon: Icons.notifications_none_rounded,
           onTap: onTap,
         ),
+
         if (count > 0)
           Positioned(
             top: -4,
             right: -4,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 6,
-                vertical: 2,
+            child: ScaleTransition(
+              scale: CurvedAnimation(
+                parent: animationController,
+                curve: Curves.easeOutBack,
               ),
-              decoration: BoxDecoration(
-                color: AppColors.danger,
-                borderRadius: BorderRadius.circular(100),
-                border: Border.all(
-                  color: AppColors.background,
-                  width: 2,
+              child: Container(
+                constraints: const BoxConstraints(
+                  minWidth: 20,
+                  minHeight: 20,
                 ),
-              ),
-              child: Text(
-                count > 9 ? '9+' : count.toString(),
-                style: const TextStyle(
-                  color: AppColors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w800,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 5,
+                  vertical: 2,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.danger,
+                  borderRadius: BorderRadius.circular(100),
+                  border: Border.all(
+                    color: AppColors.background,
+                    width: 2,
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    count > 9 ? '9+' : count.toString(),
+                    style: const TextStyle(
+                      color: AppColors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
                 ),
               ),
             ),

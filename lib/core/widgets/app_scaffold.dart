@@ -18,7 +18,7 @@ class AppScaffold extends StatelessWidget {
     this.showFooter = false,
     this.footerTab,
     this.safeArea = true,
-    this.padding = const EdgeInsets.symmetric(horizontal: 24),
+    this.padding = const EdgeInsets.symmetric(horizontal: 16),
     this.useCustomHeader = false,
   });
 
@@ -44,21 +44,30 @@ class AppScaffold extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      drawerScrimColor: AppColors.black.withOpacity(0.38),
       drawer: showDrawer ? const AppSidebarDrawer() : null,
+
       appBar: showAppBar
           ? useCustomHeader
-              ? AppHeader()
+              ? const AppHeader()
               : AppBar(
                   title: title == null ? null : Text(title!),
                   actions: actions,
+                  backgroundColor: AppColors.background,
+                  surfaceTintColor: Colors.transparent,
+                  elevation: 0,
+                  scrolledUnderElevation: 0,
                 )
           : null,
+
       body: safeArea ? SafeArea(child: pageBody) : pageBody,
+
       bottomNavigationBar: showFooter
           ? AppFooterNav(
               currentTab: footerTab ?? AppFooterTab.home,
             )
           : bottomNavigationBar,
+
       floatingActionButton: floatingActionButton,
     );
   }
