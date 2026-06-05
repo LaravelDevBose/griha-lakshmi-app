@@ -4,8 +4,8 @@ import 'dart:math' show pi;
 import 'package:flutter/material.dart';
 
 import '../../../../app/app_constants.dart';
-import '../../../../app/router.dart';
 import '../../../../app/theme.dart';
+import '../../../../core/auth/auth_guard.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -28,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen>
     _initAnimations();
     _controller.forward();
 
-    _goToLoginScreen();
+    _goToNextScreen();
   }
 
   void _initAnimations() {
@@ -65,14 +65,11 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
-  void _goToLoginScreen() {
-    Timer(AppConstants.splashDuration, () {
+  void _goToNextScreen() {
+    Timer(AppConstants.splashDuration, () async {
       if (!mounted) return;
 
-      Navigator.pushReplacementNamed(
-        context,
-        AppRoutes.login,
-      );
+      await AuthGuard.redirectAfterSplash(context);
     });
   }
 
@@ -145,12 +142,11 @@ class _SplashScreenState extends State<SplashScreen>
                         child: Text(
                           AppConstants.appTagline,
                           textAlign: TextAlign.center,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontSize: 15,
-                                    height: 1.4,
-                                    letterSpacing: 0.2,
-                                  ),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontSize: 15,
+                                height: 1.4,
+                                letterSpacing: 0.2,
+                              ),
                         ),
                       ),
                     ),
@@ -196,11 +192,11 @@ class _LogoWidget extends StatelessWidget {
       width: 120,
       height: 120,
       decoration: BoxDecoration(
-        color: AppColors.accent.withValues(alpha: 0.45),
+        color: AppColors.accent.withOpacity(0.45),
         borderRadius: BorderRadius.circular(32),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.10),
+            color: AppColors.primary.withOpacity(0.10),
             blurRadius: 28,
             offset: const Offset(0, 14),
           ),
@@ -354,7 +350,7 @@ class _BackgroundShapes extends StatelessWidget {
             height: 200,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.accent.withValues(alpha: 0.25),
+              color: AppColors.accent.withOpacity(0.25),
             ),
           ),
         ),
@@ -367,7 +363,7 @@ class _BackgroundShapes extends StatelessWidget {
             height: 240,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.accent.withValues(alpha: 0.20),
+              color: AppColors.accent.withOpacity(0.20),
             ),
           ),
         ),
@@ -380,7 +376,7 @@ class _BackgroundShapes extends StatelessWidget {
             height: 16,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.accent.withValues(alpha: 0.50),
+              color: AppColors.accent.withOpacity(0.50),
             ),
           ),
         ),
@@ -393,7 +389,7 @@ class _BackgroundShapes extends StatelessWidget {
             height: 12,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.accent.withValues(alpha: 0.40),
+              color: AppColors.accent.withOpacity(0.40),
             ),
           ),
         ),
@@ -413,7 +409,7 @@ class _LoadingIndicator extends StatelessWidget {
       child: CircularProgressIndicator(
         strokeWidth: 2.5,
         valueColor: AlwaysStoppedAnimation<Color>(
-          AppColors.primary.withValues(alpha: 0.65),
+          AppColors.primary.withOpacity(0.65),
         ),
       ),
     );

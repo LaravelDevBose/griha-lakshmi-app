@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../../../../app/app_config.dart';
 import '../../../../app/theme.dart';
+import '../../../../core/api/api.dart';
+import '../../../../core/auth/auth_guard.dart';
+import '../../../../core/helpers/helpers.dart';
+import '../../../../core/widgets/widgets.dart';
+import '../../data/datasources/auth_remote_data_source.dart';
+import '../../data/repositories/auth_repository_impl.dart';
+import '../controllers/login_controller.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,90 +18,250 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailOrPhoneController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _emailOrPhoneController = TextEditingController(
+    text: '01700000000',
+  );
+
+  final TextEditingController _passwordController = TextEditingController(
+    text: '12345678',
+  );
+
+  late final ApiClient _apiClient;
+  late final LoginController _loginController;
 
   bool _obscurePassword = true;
-  bool _rememberMe = false;
+  bool _rememberMe = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _apiClient = ApiClient();
+
+    _loginController = LoginController(
+      authRepository: AuthRepositoryImpl(
+        remoteDataSource: AuthRemoteDataSource(
+          apiClient: _apiClient,
+        ),
+      ),
+    );
+
+    _loginController.addListener(_onControllerChanged);
+  }
+
+  void _onControllerChanged() {
+    if (!mounted) return;
+    setState(() {});
+  }
 
   @override
   void dispose() {
+    _loginController.removeListener(_onControllerChanged);
+    _loginController.dispose();
+    _apiClient.close();
+
     _emailOrPhoneController.dispose();
     _passwordController.dispose();
+
     super.dispose();
   }
 
-  void _login() {
-    final emailOrPhone = _emailOrPhoneController.text.trim();
-    final password = _passwordController.text.trim();
+  Future<void> _login() async {
+    FocusScope.of(context).unfocus();
 
-    if (emailOrPhone.isEmpty || password.isEmpty) {
+    final bool isValid = _formKey.currentState?.validate() ?? false;
+
+    if (!isValid) return;
+
+    final bool success = await _loginController.login(
+      emailOrPhone: _emailOrPhoneController.text.trim(),
+      password: _passwordController.text.trim(),
+    );
+
+    if (!mounted) return;
+
+    if (!success) {
+      final failure = _loginController.failure;
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter email/phone and password'),
+        SnackBar(
+          content: Text(
+            failure?.firstErrorMessage ?? 'Login failed. Please try again.',
+          ),
         ),
       );
+
       return;
     }
 
-    // Later you will call your Go API login endpoint here.
-    // Example next route:
-    // Navigator.pushReplacementNamed(context, '/home');
-
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Login button clicked'),
+        content: Text('Login successful.'),
       ),
     );
+
+    await AuthGuard.redirectAfterLogin(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            const _LoginBackgroundShapes(),
+    return AppScaffold(
+      showAppBar: false,
+      padding: EdgeInsets.zero,
+      body: Stack(
+        children: [
+          const _LoginBackgroundShapes(),
 
-            SingleChildScrollView(
+          SafeArea(
+            child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                children: [
-                  const SizedBox(height: 50),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 50),
 
-                  const _LoginHeader(),
+                    const _LoginHeader(),
 
-                  const SizedBox(height: 40),
+                    const SizedBox(height: 40),
 
-                  _LoginCard(
-                    emailOrPhoneController: _emailOrPhoneController,
-                    passwordController: _passwordController,
-                    obscurePassword: _obscurePassword,
-                    rememberMe: _rememberMe,
-                    onPasswordVisibilityChanged: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    },
-                    onRememberChanged: (value) {
-                      setState(() {
-                        _rememberMe = value ?? false;
-                      });
-                    },
-                    onLogin: _login,
-                  ),
+                    AppCard(
+                      padding: const EdgeInsets.all(22),
+                      borderRadius: 28,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AppTextField(
+                            controller: _emailOrPhoneController,
+                            label: 'Email or Phone',
+                            hintText: 'Enter email or phone number',
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            prefixIcon: Icons.person_outline_rounded,
+                            validator: ValidationHelper.emailOrPhone,
+                          ),
 
-                  const SizedBox(height: 28),
+                          const SizedBox(height: 18),
 
-                  const _CreateAccountSection(),
+                          AppTextField(
+                            controller: _passwordController,
+                            label: 'Password',
+                            hintText: 'Enter password',
+                            obscureText: _obscurePassword,
+                            textInputAction: TextInputAction.done,
+                            prefixIcon: Icons.lock_outline_rounded,
+                            suffixIcon: _obscurePassword
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
+                            onSuffixTap: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
+                            validator: ValidationHelper.password,
+                          ),
 
-                  const SizedBox(height: 30),
-                ],
+                          const SizedBox(height: 12),
+
+                          Row(
+                            children: [
+                              SizedBox(
+                                height: 24,
+                                width: 24,
+                                child: Checkbox(
+                                  value: _rememberMe,
+                                  onChanged: _loginController.isLoading
+                                      ? null
+                                      : (value) {
+                                          setState(() {
+                                            _rememberMe = value ?? false;
+                                          });
+                                        },
+                                ),
+                              ),
+
+                              const SizedBox(width: 8),
+
+                              const Text(
+                                'Remember me',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+
+                              const Spacer(),
+
+                              TextButton(
+                                onPressed: _loginController.isLoading
+                                    ? null
+                                    : () {
+                                        // Later route to forgot password page.
+                                      },
+                                style: TextButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  minimumSize: const Size(0, 0),
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                ),
+                                child: const Text(
+                                  'Forgot Password?',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 24),
+
+                          AppButton(
+                            text: 'Login',
+                            isLoading: _loginController.isLoading,
+                            onPressed:
+                                _loginController.isLoading ? null : _login,
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          const _DividerWithText(text: 'or'),
+
+                          const SizedBox(height: 20),
+
+                          AppButton(
+                            text: 'Continue with Google',
+                            type: AppButtonType.outline,
+                            icon: Icons.g_mobiledata_rounded,
+                            onPressed: _loginController.isLoading
+                                ? null
+                                : () {
+                                    // Later Google login implementation.
+                                  },
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    const _EnvironmentInfo(),
+
+                    const SizedBox(height: 20),
+
+                    const _CreateAccountSection(),
+
+                    const SizedBox(height: 30),
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -110,7 +278,7 @@ class _LoginHeader extends StatelessWidget {
           width: 86,
           height: 86,
           decoration: BoxDecoration(
-            color: AppColors.accent.withValues(alpha: 0.45),
+            color: AppColors.accent.withOpacity(0.45),
             borderRadius: BorderRadius.circular(26),
           ),
           child: const Icon(
@@ -149,312 +317,67 @@ class _LoginHeader extends StatelessWidget {
   }
 }
 
-class _LoginCard extends StatelessWidget {
-  const _LoginCard({
-    required this.emailOrPhoneController,
-    required this.passwordController,
-    required this.obscurePassword,
-    required this.rememberMe,
-    required this.onPasswordVisibilityChanged,
-    required this.onRememberChanged,
-    required this.onLogin,
+class _DividerWithText extends StatelessWidget {
+  const _DividerWithText({
+    required this.text,
   });
 
-  final TextEditingController emailOrPhoneController;
-  final TextEditingController passwordController;
-  final bool obscurePassword;
-  final bool rememberMe;
-  final VoidCallback onPasswordVisibilityChanged;
-  final ValueChanged<bool?> onRememberChanged;
-  final VoidCallback onLogin;
+  final String text;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(22),
-      decoration: BoxDecoration(
-        color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(
-          color: AppColors.border,
-          width: 1,
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            height: 1,
+            color: AppColors.border,
+          ),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.05),
-            blurRadius: 24,
-            offset: const Offset(0, 12),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Email or Phone',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Text(
+            text,
+            style: const TextStyle(
+              fontSize: 13,
+              color: AppColors.textSecondary,
             ),
           ),
+        ),
 
-          const SizedBox(height: 8),
-
-          AppTextField(
-            controller: emailOrPhoneController,
-            hintText: 'Enter email or phone number',
-            keyboardType: TextInputType.emailAddress,
-            prefixIcon: Icons.person_outline_rounded,
+        Expanded(
+          child: Container(
+            height: 1,
+            color: AppColors.border,
           ),
-
-          const SizedBox(height: 18),
-
-          const Text(
-            'Password',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
-            ),
-          ),
-
-          const SizedBox(height: 8),
-
-          AppTextField(
-            controller: passwordController,
-            hintText: 'Enter password',
-            obscureText: obscurePassword,
-            prefixIcon: Icons.lock_outline_rounded,
-            suffixIcon: obscurePassword
-                ? Icons.visibility_off_outlined
-                : Icons.visibility_outlined,
-            onSuffixTap: onPasswordVisibilityChanged,
-          ),
-
-          const SizedBox(height: 12),
-
-          Row(
-            children: [
-              SizedBox(
-                height: 24,
-                width: 24,
-                child: Checkbox(
-                  value: rememberMe,
-                  activeColor: AppColors.primary,
-                  side: const BorderSide(
-                    color: AppColors.border,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  onChanged: onRememberChanged,
-                ),
-              ),
-
-              const SizedBox(width: 8),
-
-              const Text(
-                'Remember me',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-
-              const Spacer(),
-
-              TextButton(
-                onPressed: () {
-                  // Navigator.pushNamed(context, '/forgot-password');
-                },
-                style: TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  minimumSize: const Size(0, 0),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-                child: const Text(
-                  'Forgot Password?',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 24),
-
-          SizedBox(
-            width: double.infinity,
-            height: 54,
-            child: ElevatedButton(
-              onPressed: onLogin,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.white,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-              child: const Text(
-                'Login',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.2,
-                ),
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  height: 1,
-                  color: AppColors.border,
-                ),
-              ),
-
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                child: Text(
-                  'or',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ),
-
-              Expanded(
-                child: Container(
-                  height: 1,
-                  color: AppColors.border,
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 20),
-
-          SizedBox(
-            width: double.infinity,
-            height: 52,
-            child: OutlinedButton.icon(
-              onPressed: () {
-                // Later you can add Google login here.
-              },
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.textPrimary,
-                side: const BorderSide(
-                  color: AppColors.border,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-              icon: const Icon(
-                Icons.g_mobiledata_rounded,
-                size: 28,
-                color: AppColors.primary,
-              ),
-              label: const Text(
-                'Continue with Google',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
 
-class AppTextField extends StatelessWidget {
-  const AppTextField({
-    super.key,
-    required this.controller,
-    required this.hintText,
-    this.keyboardType,
-    this.obscureText = false,
-    this.prefixIcon,
-    this.suffixIcon,
-    this.onSuffixTap,
-  });
-
-  final TextEditingController controller;
-  final String hintText;
-  final TextInputType? keyboardType;
-  final bool obscureText;
-  final IconData? prefixIcon;
-  final IconData? suffixIcon;
-  final VoidCallback? onSuffixTap;
+class _EnvironmentInfo extends StatelessWidget {
+  const _EnvironmentInfo();
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      keyboardType: keyboardType,
-      obscureText: obscureText,
-      cursorColor: AppColors.primary,
-      style: const TextStyle(
-        fontSize: 15,
-        color: AppColors.textPrimary,
-        fontWeight: FontWeight.w500,
-      ),
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: const TextStyle(
-          fontSize: 14,
-          color: AppColors.textSecondary,
-          fontWeight: FontWeight.w400,
-        ),
-        prefixIcon: prefixIcon == null
-            ? null
-            : Icon(
-                prefixIcon,
-                color: AppColors.textSecondary,
-                size: 22,
-              ),
-        suffixIcon: suffixIcon == null
-            ? null
-            : GestureDetector(
-                onTap: onSuffixTap,
-                child: Icon(
-                  suffixIcon,
-                  color: AppColors.textSecondary,
-                  size: 22,
-                ),
-              ),
-        filled: true,
-        fillColor: AppColors.background,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(
-            color: AppColors.border,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(
-            color: AppColors.primary,
-            width: 1.4,
-          ),
+    if (!AppConfig.useMockData) {
+      return const SizedBox.shrink();
+    }
+
+    return AppCard(
+      padding: const EdgeInsets.all(14),
+      showShadow: false,
+      backgroundColor: AppColors.accent.withOpacity(0.35),
+      borderColor: AppColors.accent,
+      child: const Text(
+        'Mock login: 01700000000 / 12345678',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: AppColors.primary,
+          fontSize: 13,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );
@@ -479,7 +402,7 @@ class _CreateAccountSection extends StatelessWidget {
 
         TextButton(
           onPressed: () {
-            // Navigator.pushNamed(context, '/register');
+            // Navigator.pushNamed(context, AppRoutes.register);
           },
           child: const Text(
             'Create Account',
@@ -510,7 +433,7 @@ class _LoginBackgroundShapes extends StatelessWidget {
             height: 210,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.accent.withValues(alpha: 0.25),
+              color: AppColors.accent.withOpacity(0.25),
             ),
           ),
         ),
@@ -523,7 +446,7 @@ class _LoginBackgroundShapes extends StatelessWidget {
             height: 230,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.accent.withValues(alpha: 0.22),
+              color: AppColors.accent.withOpacity(0.22),
             ),
           ),
         ),
@@ -536,7 +459,7 @@ class _LoginBackgroundShapes extends StatelessWidget {
             height: 14,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.accent.withValues(alpha: 0.6),
+              color: AppColors.accent.withOpacity(0.6),
             ),
           ),
         ),
@@ -549,7 +472,7 @@ class _LoginBackgroundShapes extends StatelessWidget {
             height: 10,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.accent.withValues(alpha: 0.45),
+              color: AppColors.accent.withOpacity(0.45),
             ),
           ),
         ),

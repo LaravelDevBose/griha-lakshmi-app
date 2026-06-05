@@ -51,6 +51,11 @@ class AppRouter {
           const LoginScreen(),
         );
 
+      case AppRoutes.home:
+        return _buildRoute(
+          settings,
+          const WidgetPreviewScreen(),
+        );
       // Add these after creating screens
       /*
       case AppRoutes.register:
@@ -59,11 +64,7 @@ class AppRouter {
           const RegisterScreen(),
         );
 
-      case AppRoutes.home:
-        return _buildRoute(
-          settings,
-          const HomeScreen(),
-        );
+      
 
       case AppRoutes.addExpense:
         return _buildRoute(
