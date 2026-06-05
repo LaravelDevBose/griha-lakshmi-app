@@ -40,7 +40,7 @@ class AppSidebarDrawer extends StatelessWidget {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.black.withOpacity(0.18),
+                  color: AppColors.black.withValues(alpha: 0.18),
                   blurRadius: 32,
                   offset: const Offset(10, 12),
                 ),
@@ -125,7 +125,7 @@ class _ModernDrawerHeader extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             AppColors.primary,
-            AppColors.primary.withOpacity(0.88),
+            AppColors.primary.withValues(alpha: 0.88),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -133,7 +133,7 @@ class _ModernDrawerHeader extends StatelessWidget {
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.18),
+            color: AppColors.primary.withValues(alpha: 0.18),
             blurRadius: 22,
             offset: const Offset(0, 12),
           ),
@@ -149,7 +149,7 @@ class _ModernDrawerHeader extends StatelessWidget {
               height: 96,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.white.withOpacity(0.08),
+                color: AppColors.white.withValues(alpha: 0.08),
               ),
             ),
           ),
@@ -162,7 +162,7 @@ class _ModernDrawerHeader extends StatelessWidget {
               height: 118,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.white.withOpacity(0.07),
+                color: AppColors.white.withValues(alpha: 0.07),
               ),
             ),
           ),
@@ -203,7 +203,7 @@ class _ModernDrawerHeader extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: AppColors.white.withOpacity(0.78),
+                        color: AppColors.white.withValues(alpha: 0.78),
                         fontSize: 12,
                         height: 1.35,
                         fontWeight: FontWeight.w500,
@@ -234,7 +234,7 @@ class _DrawerSectionTitle extends StatelessWidget {
       child: Text(
         title.toUpperCase(),
         style: TextStyle(
-          color: AppColors.textSecondary.withOpacity(0.75),
+          color: AppColors.textSecondary.withValues(alpha: 0.75),
           fontSize: 11,
           fontWeight: FontWeight.w900,
           letterSpacing: 0.7,
@@ -309,12 +309,12 @@ class _DrawerItemState extends State<_DrawerItem> {
               ),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? AppColors.primary.withOpacity(0.10)
+                    ? AppColors.primary.withValues(alpha: 0.10)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(
                   color: isSelected
-                      ? AppColors.primary.withOpacity(0.16)
+                      ? AppColors.primary.withValues(alpha: 0.16)
                       : Colors.transparent,
                 ),
               ),
@@ -395,10 +395,10 @@ class _DrawerFooter extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: AppColors.danger.withOpacity(0.10),
+            color: AppColors.danger.withValues(alpha: 0.10),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: AppColors.danger.withOpacity(0.14),
+              color: AppColors.danger.withValues(alpha: 0.14),
             ),
           ),
           child: const Row(

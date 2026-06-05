@@ -278,7 +278,7 @@ class _LoginHeader extends StatelessWidget {
           width: 86,
           height: 86,
           decoration: BoxDecoration(
-            color: AppColors.accent.withOpacity(0.45),
+            color: AppColors.accent.withValues(alpha: 0.45),
             borderRadius: BorderRadius.circular(26),
           ),
           child: const Icon(
@@ -369,7 +369,7 @@ class _EnvironmentInfo extends StatelessWidget {
     return AppCard(
       padding: const EdgeInsets.all(14),
       showShadow: false,
-      backgroundColor: AppColors.accent.withOpacity(0.35),
+      backgroundColor: AppColors.accent.withValues(alpha: 0.35),
       borderColor: AppColors.accent,
       child: const Text(
         'Mock login: 01700000000 / 12345678',
@@ -433,7 +433,7 @@ class _LoginBackgroundShapes extends StatelessWidget {
             height: 210,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.accent.withOpacity(0.25),
+              color: AppColors.accent.withValues(alpha: 0.25),
             ),
           ),
         ),
@@ -446,7 +446,7 @@ class _LoginBackgroundShapes extends StatelessWidget {
             height: 230,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.accent.withOpacity(0.22),
+              color: AppColors.accent.withValues(alpha: 0.22),
             ),
           ),
         ),
@@ -459,7 +459,7 @@ class _LoginBackgroundShapes extends StatelessWidget {
             height: 14,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.accent.withOpacity(0.6),
+              color: AppColors.accent.withValues(alpha: 0.6),
             ),
           ),
         ),
@@ -472,7 +472,7 @@ class _LoginBackgroundShapes extends StatelessWidget {
             height: 10,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.accent.withOpacity(0.45),
+              color: AppColors.accent.withValues(alpha: 0.45),
             ),
           ),
         ),

@@ -3,8 +3,6 @@ import '../../domain/entities/auth_session.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_data_source.dart';
 import '../models/login_request_model.dart';
-import '../models/family_model.dart';
-import '../models/user_model.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({

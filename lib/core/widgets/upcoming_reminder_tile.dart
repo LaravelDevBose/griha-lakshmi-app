@@ -37,12 +37,12 @@ class UpcomingReminderTile extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: isToday
-              ? AppColors.warning.withOpacity(0.08)
+              ? AppColors.warning.withValues(alpha: 0.08)
               : AppColors.white,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
             color: isToday
-                ? AppColors.warning.withOpacity(0.45)
+                ? AppColors.warning.withValues(alpha: 0.45)
                 : AppColors.border,
           ),
         ),
@@ -53,7 +53,7 @@ class UpcomingReminderTile extends StatelessWidget {
               size: 42,
               iconSize: 21,
               borderRadius: 14,
-              backgroundColor: color.withOpacity(0.12),
+              backgroundColor: color.withValues(alpha: 0.12),
               iconColor: color,
             ),
 
@@ -115,7 +115,7 @@ class UpcomingReminderTile extends StatelessWidget {
                         width: 4,
                         height: 4,
                         decoration: BoxDecoration(
-                          color: AppColors.textSecondary.withOpacity(0.5),
+                          color: AppColors.textSecondary.withValues(alpha: 0.5),
                           shape: BoxShape.circle,
                         ),
                       ),

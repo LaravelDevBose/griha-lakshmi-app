@@ -43,7 +43,7 @@ class ExpenseProgressTile extends StatelessWidget {
             size: 40,
             iconSize: 20,
             borderRadius: 14,
-            backgroundColor: progressColor.withOpacity(0.10),
+            backgroundColor: progressColor.withValues(alpha: 0.10),
             iconColor: progressColor,
           ),
 

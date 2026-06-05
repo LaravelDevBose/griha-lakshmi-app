@@ -27,7 +27,7 @@ class AppFooterNav extends StatelessWidget {
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: AppColors.black.withOpacity(0.16),
+            color: AppColors.black.withValues(alpha: 0.16),
             blurRadius: 28,
             offset: const Offset(0, 12),
           ),
@@ -155,7 +155,7 @@ class _FooterNavItemState extends State<_FooterNavItem>
                   widget.icon,
                   color: _isSelected
                       ? AppColors.primary
-                      : AppColors.white.withOpacity(0.66),
+                      : AppColors.white.withValues(alpha: 0.66),
                   size: _isSelected ? 25 : 24,
                 ),
               ),

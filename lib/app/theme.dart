@@ -43,7 +43,6 @@ class AppTheme {
       primary: AppColors.primary,
       secondary: AppColors.accent,
       surface: AppColors.cardBackground,
-      background: AppColors.background,
       error: AppColors.danger,
     ),
 

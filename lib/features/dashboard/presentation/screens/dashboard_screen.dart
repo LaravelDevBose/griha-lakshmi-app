@@ -221,7 +221,7 @@ class _DashboardGreeting extends StatelessWidget {
                   Text(
                     month,
                     style: TextStyle(
-                      color: AppColors.white.withOpacity(0.80),
+                      color: AppColors.white.withValues(alpha: 0.80),
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                     ),
@@ -235,7 +235,7 @@ class _DashboardGreeting extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.white.withOpacity(0.14),
+                        color: AppColors.white.withValues(alpha: 0.14),
                         borderRadius: BorderRadius.circular(100),
                       ),
                       child: Text(
@@ -254,7 +254,7 @@ class _DashboardGreeting extends StatelessWidget {
 
             AppIconBox(
               icon: Icons.family_restroom_rounded,
-              backgroundColor: AppColors.white.withOpacity(0.14),
+              backgroundColor: AppColors.white.withValues(alpha: 0.14),
               iconColor: AppColors.white,
             ),
           ],
@@ -285,7 +285,7 @@ class _SummaryGrid extends StatelessWidget {
             amount: summary.totalIncome,
             icon: Icons.trending_up_rounded,
             amountType: AmountTextType.income,
-            iconBackgroundColor: AppColors.success.withOpacity(0.10),
+            iconBackgroundColor: AppColors.success.withValues(alpha: 0.10),
             iconColor: AppColors.success,
             subtitle: 'This month',
           ),
@@ -294,7 +294,7 @@ class _SummaryGrid extends StatelessWidget {
             amount: summary.totalExpense,
             icon: Icons.trending_down_rounded,
             amountType: AmountTextType.expense,
-            iconBackgroundColor: AppColors.danger.withOpacity(0.10),
+            iconBackgroundColor: AppColors.danger.withValues(alpha: 0.10),
             iconColor: AppColors.danger,
             subtitle: 'This month',
           ),
@@ -310,7 +310,7 @@ class _SummaryGrid extends StatelessWidget {
             amount: summary.totalSavings,
             icon: Icons.savings_outlined,
             amountType: AmountTextType.warning,
-            iconBackgroundColor: AppColors.warning.withOpacity(0.10),
+            iconBackgroundColor: AppColors.warning.withValues(alpha: 0.10),
             iconColor: AppColors.warning,
             subtitle: 'Saved',
           ),

@@ -161,7 +161,7 @@ class _NotificationSheetState extends State<NotificationSheet> {
           shrinkWrap: true,
           physics: const AlwaysScrollableScrollPhysics(),
           itemCount: _controller.notifications.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 12),
+          separatorBuilder: (_, _) => const SizedBox(height: 12),
           itemBuilder: (context, index) {
             return _NotificationItem(
               item: _controller.notifications[index],
@@ -187,7 +187,7 @@ class _NotificationItem extends StatelessWidget {
       showShadow: false,
       backgroundColor: item.isRead
           ? AppColors.white
-          : AppColors.accent.withOpacity(0.20),
+          : AppColors.accent.withValues(alpha: 0.20),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -195,7 +195,7 @@ class _NotificationItem extends StatelessWidget {
             icon: _icon,
             size: 44,
             iconSize: 22,
-            backgroundColor: _color.withOpacity(0.10),
+            backgroundColor: _color.withValues(alpha: 0.10),
             iconColor: _color,
           ),
 

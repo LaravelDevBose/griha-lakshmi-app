@@ -54,7 +54,7 @@ class CompactTransactionTile extends StatelessWidget {
               size: 38,
               iconSize: 19,
               borderRadius: 13,
-              backgroundColor: color.withOpacity(0.10),
+              backgroundColor: color.withValues(alpha: 0.10),
               iconColor: color,
             ),
 

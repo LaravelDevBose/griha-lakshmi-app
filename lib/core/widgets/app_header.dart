@@ -6,7 +6,6 @@ import '../../features/notification/data/datasources/notification_remote_data_so
 import '../../features/notification/data/repositories/notification_repository_impl.dart';
 import '../../features/notification/presentation/controllers/notification_controller.dart';
 import '../api/api.dart';
-import 'app_icon_box.dart';
 import 'notification_sheet.dart';
 
 class AppHeader extends StatefulWidget implements PreferredSizeWidget {
@@ -144,7 +143,7 @@ class _HeaderBrand extends StatelessWidget {
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              color: AppColors.accent.withOpacity(0.55),
+              color: AppColors.accent.withValues(alpha: 0.55),
               borderRadius: BorderRadius.circular(14),
             ),
             child: const Icon(
@@ -225,7 +224,7 @@ class _HeaderIconButtonState extends State<_HeaderIconButton> {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.black.withOpacity(0.035),
+                  color: AppColors.black.withValues(alpha: 0.035),
                   blurRadius: 14,
                   offset: const Offset(0, 6),
                 ),

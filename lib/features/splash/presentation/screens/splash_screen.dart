@@ -192,11 +192,11 @@ class _LogoWidget extends StatelessWidget {
       width: 120,
       height: 120,
       decoration: BoxDecoration(
-        color: AppColors.accent.withOpacity(0.45),
+        color: AppColors.accent.withValues(alpha: 0.45),
         borderRadius: BorderRadius.circular(32),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.10),
+            color: AppColors.primary.withValues(alpha: 0.10),
             blurRadius: 28,
             offset: const Offset(0, 14),
           ),
@@ -350,7 +350,7 @@ class _BackgroundShapes extends StatelessWidget {
             height: 200,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.accent.withOpacity(0.25),
+              color: AppColors.accent.withValues(alpha: 0.25),
             ),
           ),
         ),
@@ -363,7 +363,7 @@ class _BackgroundShapes extends StatelessWidget {
             height: 240,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.accent.withOpacity(0.20),
+              color: AppColors.accent.withValues(alpha: 0.20),
             ),
           ),
         ),
@@ -376,7 +376,7 @@ class _BackgroundShapes extends StatelessWidget {
             height: 16,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.accent.withOpacity(0.50),
+              color: AppColors.accent.withValues(alpha: 0.50),
             ),
           ),
         ),
@@ -389,7 +389,7 @@ class _BackgroundShapes extends StatelessWidget {
             height: 12,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.accent.withOpacity(0.40),
+              color: AppColors.accent.withValues(alpha: 0.40),
             ),
           ),
         ),
@@ -409,7 +409,7 @@ class _LoadingIndicator extends StatelessWidget {
       child: CircularProgressIndicator(
         strokeWidth: 2.5,
         valueColor: AlwaysStoppedAnimation<Color>(
-          AppColors.primary.withOpacity(0.65),
+          AppColors.primary.withValues(alpha: 0.65),
         ),
       ),
     );
