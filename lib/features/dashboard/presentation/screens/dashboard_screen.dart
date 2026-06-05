@@ -69,7 +69,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       showDrawer: true,
       showFooter: true,
       footerTab: AppFooterTab.home,
-      notificationCount: 3,
       body: _buildBody(),
     );
   }

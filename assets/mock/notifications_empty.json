@@ -1,0 +1,8 @@
+{
+  "success": true,
+  "message": "Notifications loaded successfully.",
+  "data": {
+    "unread_count": 0,
+    "notifications": []
+  }
+}

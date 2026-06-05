@@ -20,7 +20,6 @@ class AppScaffold extends StatelessWidget {
     this.safeArea = true,
     this.padding = const EdgeInsets.symmetric(horizontal: 24),
     this.useCustomHeader = false,
-    this.notificationCount = 0,
   });
 
   final Widget body;
@@ -35,7 +34,6 @@ class AppScaffold extends StatelessWidget {
   final bool safeArea;
   final EdgeInsetsGeometry padding;
   final bool useCustomHeader;
-  final int notificationCount;
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +47,7 @@ class AppScaffold extends StatelessWidget {
       drawer: showDrawer ? const AppSidebarDrawer() : null,
       appBar: showAppBar
           ? useCustomHeader
-              ? AppHeader(
-                  notificationCount: notificationCount,
-                )
+              ? AppHeader()
               : AppBar(
                   title: title == null ? null : Text(title!),
                   actions: actions,

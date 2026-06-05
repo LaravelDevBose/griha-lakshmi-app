@@ -1,0 +1,36 @@
+{
+  "success": true,
+  "message": "Notifications loaded successfully.",
+  "data": {
+    "unread_count": 3,
+    "notifications": [
+      {
+        "id": 1,
+        "title": "Electricity bill due soon",
+        "message": "Your electricity bill is due in 2 days.",
+        "type": "warning",
+        "icon": "electricity",
+        "is_read": false,
+        "created_at": "2026-06-06T09:30:00+06:00"
+      },
+      {
+        "id": 2,
+        "title": "Salary added",
+        "message": "৳65,000 salary income was added successfully.",
+        "type": "success",
+        "icon": "income",
+        "is_read": false,
+        "created_at": "2026-06-06T08:15:00+06:00"
+      },
+      {
+        "id": 3,
+        "title": "Budget alert",
+        "message": "Grocery expense reached 67% of monthly budget.",
+        "type": "info",
+        "icon": "grocery",
+        "is_read": false,
+        "created_at": "2026-06-05T20:10:00+06:00"
+      }
+    ]
+  }
+}

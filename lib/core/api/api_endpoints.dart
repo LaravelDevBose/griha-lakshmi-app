@@ -53,4 +53,10 @@ class ApiEndpoints {
   static const String dashboard = '/dashboard';
   static const String monthlyReport = '/reports/monthly';
   static const String categoryReport = '/reports/categories';
+
+
+  // Notifications
+  static const String notifications = '/notifications';
+  static const String markAllNotificationsAsRead = '/notifications/mark-all-read';
+  static String markNotificationAsRead(int id) => '/notifications/$id/mark-as-read';
 }
