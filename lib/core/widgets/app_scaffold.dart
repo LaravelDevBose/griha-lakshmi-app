@@ -44,7 +44,7 @@ class AppScaffold extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      drawerScrimColor: AppColors.black.withValues(alpha: 0.38),
+      drawerScrimColor: AppColors.black.withOpacity(0.38),
       drawer: showDrawer ? const AppSidebarDrawer() : null,
 
       appBar: showAppBar
@@ -55,6 +55,7 @@ class AppScaffold extends StatelessWidget {
                   actions: actions,
                   backgroundColor: AppColors.background,
                   surfaceTintColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
                   elevation: 0,
                   scrolledUnderElevation: 0,
                 )

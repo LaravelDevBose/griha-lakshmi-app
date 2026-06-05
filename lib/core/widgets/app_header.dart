@@ -14,7 +14,7 @@ class AppHeader extends StatefulWidget implements PreferredSizeWidget {
   });
 
   @override
-  Size get preferredSize => const Size.fromHeight(72);
+  Size get preferredSize => const Size.fromHeight(76);
 
   @override
   State<AppHeader> createState() => _AppHeaderState();
@@ -40,11 +40,11 @@ class _AppHeaderState extends State<AppHeader>
       ),
     );
 
+    // Keep AnimationController value between 0.0 and 1.0.
+    // Scaling from 0.85 to 1.08 is handled by Tween below.
     _badgeAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 350),
-      lowerBound: 0.85,
-      upperBound: 1.08,
     );
 
     _notificationController.addListener(_onNotificationChanged);
@@ -58,7 +58,7 @@ class _AppHeaderState extends State<AppHeader>
     if (!mounted) return;
 
     if (_notificationController.unreadCount > 0) {
-      _badgeAnimationController.forward(from: 0.85);
+      _badgeAnimationController.forward(from: 0);
     }
 
     setState(() {});
@@ -75,52 +75,56 @@ class _AppHeaderState extends State<AppHeader>
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      automaticallyImplyLeading: false,
-      toolbarHeight: 72,
+    return Material(
+      color: AppColors.background,
       elevation: 0,
-      scrolledUnderElevation: 0,
-      backgroundColor: AppColors.background,
-      surfaceTintColor: Colors.transparent,
-      shadowColor: Colors.transparent,
-      titleSpacing: 16,
-      title: Row(
-        children: [
-          Builder(
-            builder: (context) {
-              return _HeaderIconButton(
-                icon: Icons.menu_rounded,
-                onTap: () {
-                  Scaffold.of(context).openDrawer();
+      child: SafeArea(
+        bottom: false,
+        child: Container(
+          height: 76,
+          color: AppColors.background,
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+          child: Row(
+            children: [
+              Builder(
+                builder: (context) {
+                  return _HeaderIconButton(
+                    icon: Icons.menu_rounded,
+                    onTap: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
                 },
-              );
-            },
+              ),
+
+              const Spacer(),
+
+              const _HeaderBrand(),
+
+              const Spacer(),
+
+              _NotificationButton(
+                count: _notificationController.unreadCount,
+                animationController: _badgeAnimationController,
+                onTap: () async {
+                  await NotificationSheet.show(context);
+
+                  if (!mounted) return;
+
+                  await _notificationController.loadNotifications();
+                },
+              ),
+            ],
           ),
-
-          const Spacer(),
-
-          _HeaderBrand(),
-
-          const Spacer(),
-
-          _NotificationButton(
-            count: _notificationController.unreadCount,
-            animationController: _badgeAnimationController,
-            onTap: () async {
-              await NotificationSheet.show(context);
-
-              if (!mounted) return;
-
-              await _notificationController.loadNotifications();
-            },
-          ),
-        ],
+        ),
       ),
     );
   }
 }
 
 class _HeaderBrand extends StatelessWidget {
+  const _HeaderBrand();
+
   @override
   Widget build(BuildContext context) {
     return TweenAnimationBuilder<double>(
@@ -143,7 +147,7 @@ class _HeaderBrand extends StatelessWidget {
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              color: AppColors.accent.withValues(alpha: 0.55),
+              color: AppColors.accent.withOpacity(0.55),
               borderRadius: BorderRadius.circular(14),
             ),
             child: const Icon(
@@ -155,15 +159,20 @@ class _HeaderBrand extends StatelessWidget {
 
           const SizedBox(width: 8),
 
-          Text(
-            AppConstants.appName,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 16,
-              fontWeight: FontWeight.w900,
-              letterSpacing: -0.2,
+          ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 150,
+            ),
+            child: Text(
+              AppConstants.appName,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 16,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -0.2,
+              ),
             ),
           ),
         ],
@@ -224,7 +233,7 @@ class _HeaderIconButtonState extends State<_HeaderIconButton> {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.black.withValues(alpha: 0.035),
+                  color: AppColors.black.withOpacity(0.035),
                   blurRadius: 14,
                   offset: const Offset(0, 6),
                 ),
@@ -255,6 +264,16 @@ class _NotificationButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Animation<double> badgeScaleAnimation = Tween<double>(
+      begin: 0.85,
+      end: 1.08,
+    ).animate(
+      CurvedAnimation(
+        parent: animationController,
+        curve: Curves.easeOutBack,
+      ),
+    );
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -268,10 +287,7 @@ class _NotificationButton extends StatelessWidget {
             top: -4,
             right: -4,
             child: ScaleTransition(
-              scale: CurvedAnimation(
-                parent: animationController,
-                curve: Curves.easeOutBack,
-              ),
+              scale: badgeScaleAnimation,
               child: Container(
                 constraints: const BoxConstraints(
                   minWidth: 20,
@@ -288,6 +304,13 @@ class _NotificationButton extends StatelessWidget {
                     color: AppColors.background,
                     width: 2,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.danger.withOpacity(0.22),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: Center(
                   child: Text(
