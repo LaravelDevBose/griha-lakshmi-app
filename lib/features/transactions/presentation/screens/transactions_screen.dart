@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/api/api.dart';
+import '../../../../core/widgets/app_footer_nav.dart';
+import '../../../../core/widgets/app_scaffold.dart';
+import '../../../income/presentation/screens/add_edit_income_screen.dart';
 import '../../data/datasources/transaction_remote_datasource.dart';
 import '../../data/models/transaction_model.dart';
 import '../../data/repositories/transaction_repository.dart';
@@ -96,6 +99,19 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     controller.changeDateRange(picked);
   }
 
+  Future<void> _openAddIncomeScreen() async {
+    final bool? saved = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const AddEditIncomeScreen(),
+      ),
+    );
+
+    if (saved == true) {
+      await controller.getTransactions();
+    }
+  }
+
   void _showComingSoonMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -107,21 +123,14 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-
-    return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
-      appBar: AppBar(
-        title: const Text('Transactions'),
-        centerTitle: false,
-        actions: [
-          IconButton(
-            onPressed: controller.clearFilters,
-            tooltip: 'Clear filters',
-            icon: const Icon(Icons.refresh_rounded),
-          ),
-        ],
-      ),
+    return AppScaffold(
+      useCustomHeader: true,
+      showDrawer: true,
+      showFooter: true,
+      footerTab: AppFooterTab.transactions,
+      showQuickActionFab: true,
+      onIncomeSaved: controller.getTransactions,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       body: AnimatedBuilder(
         animation: controller,
         builder: (BuildContext context, Widget? child) {
@@ -145,7 +154,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             onRefresh: controller.getTransactions,
             child: ListView(
               controller: scrollController,
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 24),
+              padding: const EdgeInsets.only(
+                top: 10,
+                bottom: 96,
+              ),
               children: [
                 _MonthlySummaryCard(
                   income: controller.totalIncome,
@@ -155,9 +167,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 ),
                 const SizedBox(height: 12),
                 _ActionButtonsRow(
-                  onAddIncome: () {
-                    _showComingSoonMessage('Add Income screen coming next');
-                  },
+                  onAddIncome: _openAddIncomeScreen,
                   onAddExpense: () {
                     _showComingSoonMessage('Add Expense screen coming next');
                   },
@@ -219,12 +229,13 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                     child: Center(
                       child: Text(
                         'No more transactions',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withValues(
-                            alpha: 0.45,
-                          ),
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withValues(alpha: 0.45),
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                     ),
                   ),
@@ -453,16 +464,13 @@ class _FiltersSection extends StatelessWidget {
   final String selectedAccount;
   final String selectedType;
   final DateTimeRange? selectedDateRange;
-
   final List<String> categories;
   final List<String> members;
   final List<String> accounts;
-
   final ValueChanged<String> onCategoryChanged;
   final ValueChanged<String> onMemberChanged;
   final ValueChanged<String> onAccountChanged;
   final ValueChanged<String> onTypeChanged;
-
   final VoidCallback onDateRangeTap;
   final VoidCallback onClearDateRange;
   final String Function(DateTime date) formatDate;
@@ -580,7 +588,6 @@ class _DropdownFilter extends StatelessWidget {
       ).toList(),
       onChanged: (String? value) {
         if (value == null) return;
-
         onChanged(value);
       },
     );
@@ -672,14 +679,10 @@ class _TransactionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-
     final bool isIncome = transaction.isIncome;
-
     final IconData icon =
         isIncome ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded;
-
     final String amountPrefix = isIncome ? '+' : '-';
-
     final Color transactionColor = isIncome ? Colors.green : Colors.red;
 
     return Container(

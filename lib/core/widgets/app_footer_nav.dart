@@ -5,7 +5,7 @@ import '../../app/theme.dart';
 
 enum AppFooterTab {
   home,
-  expense,
+  transactions,
   report,
   profile,
 }
@@ -48,7 +48,7 @@ class AppFooterNav extends StatelessWidget {
               ),
               _FooterNavItem(
                 icon: Icons.receipt_long_rounded,
-                tab: AppFooterTab.expense,
+                tab: AppFooterTab.transactions,
                 currentTab: currentTab,
                 routeName: AppRoutes.transactions,
               ),

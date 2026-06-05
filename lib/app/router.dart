@@ -8,7 +8,8 @@ import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../features/transactions/presentation/screens/transactions_screen.dart';
 // import '../features/expense/presentation/screens/add_expense_screen.dart';
-// import '../features/income/presentation/screens/add_income_screen.dart';
+import '../features/income/presentation/screens/income_list_screen.dart';
+import '../features/income/presentation/screens/add_edit_income_screen.dart';
 // import '../features/bills/presentation/screens/bills_screen.dart';
 // import '../features/reports/presentation/screens/reports_screen.dart';
 // import '../features/profile/presentation/screens/profile_screen.dart';
@@ -26,6 +27,7 @@ class AppRoutes {
   static const String home = '/dashboard';
   static const String transactions = '/transactions';
   static const String addExpense = '/add-expense';
+  static const String incomes = '/incomes';
   static const String addIncome = '/add-income';
   static const String addPurchase = '/add-purchase';
   static const String addReminder = '/add-reminder';
@@ -64,6 +66,16 @@ class AppRouter {
           settings,
           const TransactionsScreen(),
         );
+      case AppRoutes.incomes:
+        return _buildRoute(
+          settings,
+          const IncomeListScreen(),
+        );
+      case AppRoutes.addIncome:
+        return _buildRoute(
+          settings,
+          const AddEditIncomeScreen(),
+        );
       // Add these after creating screens
       /*
       case AppRoutes.register:
@@ -78,12 +90,6 @@ class AppRouter {
         return _buildRoute(
           settings,
           const AddExpenseScreen(),
-        );
-
-      case AppRoutes.addIncome:
-        return _buildRoute(
-          settings,
-          const AddIncomeScreen(),
         );
 
       case AppRoutes.bills:

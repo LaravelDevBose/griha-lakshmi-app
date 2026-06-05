@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../../app/router.dart';
 import '../../app/theme.dart';
+import '../../features/income/presentation/screens/add_edit_income_screen.dart';
 import 'app_icon_box.dart';
 
 class QuickActionFab extends StatefulWidget {
   const QuickActionFab({
+    this.onIncomeSaved,
     super.key,
   });
+
+  final VoidCallback? onIncomeSaved;
 
   @override
   State<QuickActionFab> createState() => _QuickActionFabState();
@@ -55,7 +59,9 @@ class _QuickActionFabState extends State<QuickActionFab>
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (_) {
-        return const _QuickActionSheet();
+        return _QuickActionSheet(
+          onIncomeSaved: widget.onIncomeSaved,
+        );
       },
     );
   }
@@ -112,7 +118,11 @@ class _QuickActionFabState extends State<QuickActionFab>
 }
 
 class _QuickActionSheet extends StatelessWidget {
-  const _QuickActionSheet();
+  const _QuickActionSheet({
+    this.onIncomeSaved,
+  });
+
+  final VoidCallback? onIncomeSaved;
 
   @override
   Widget build(BuildContext context) {
@@ -138,9 +148,7 @@ class _QuickActionSheet extends StatelessWidget {
                   borderRadius: BorderRadius.circular(100),
                 ),
               ),
-
               const SizedBox(height: 22),
-
               Row(
                 children: [
                   const Expanded(
@@ -168,7 +176,6 @@ class _QuickActionSheet extends StatelessWidget {
                       ],
                     ),
                   ),
-
                   InkWell(
                     onTap: () {
                       Navigator.pop(context);
@@ -193,9 +200,7 @@ class _QuickActionSheet extends StatelessWidget {
                   ),
                 ],
               ),
-
               const SizedBox(height: 22),
-
               GridView.count(
                 crossAxisCount: 2,
                 shrinkWrap: true,
@@ -203,22 +208,22 @@ class _QuickActionSheet extends StatelessWidget {
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
                 childAspectRatio: 1.55,
-                children: const [
-                  _QuickActionItem(
+                children: [
+                  const _QuickActionItem(
                     title: 'Expense',
                     subtitle: 'Daily cost',
                     icon: Icons.receipt_long_rounded,
                     routeName: AppRoutes.addExpense,
                     color: AppColors.danger,
                   ),
-                  _QuickActionItem(
+                  const _QuickActionItem(
                     title: 'Purchase',
                     subtitle: 'Buy later',
                     icon: Icons.shopping_bag_rounded,
                     routeName: AppRoutes.addPurchase,
                     color: AppColors.primary,
                   ),
-                  _QuickActionItem(
+                  const _QuickActionItem(
                     title: 'Reminder',
                     subtitle: 'Upcoming task',
                     icon: Icons.notifications_active_rounded,
@@ -229,17 +234,18 @@ class _QuickActionSheet extends StatelessWidget {
                     title: 'Income',
                     subtitle: 'Money received',
                     icon: Icons.trending_up_rounded,
-                    routeName: AppRoutes.addIncome,
                     color: AppColors.success,
+                    pageBuilder: (_) => const AddEditIncomeScreen(),
+                    onCompleted: onIncomeSaved,
                   ),
-                  _QuickActionItem(
+                  const _QuickActionItem(
                     title: 'Bill',
                     subtitle: 'Need to pay',
                     icon: Icons.payments_rounded,
                     routeName: AppRoutes.bills,
                     color: AppColors.info,
                   ),
-                  _QuickActionItem(
+                  const _QuickActionItem(
                     title: 'Savings',
                     subtitle: 'Goal deposit',
                     icon: Icons.savings_rounded,
@@ -261,15 +267,19 @@ class _QuickActionItem extends StatefulWidget {
     required this.title,
     required this.subtitle,
     required this.icon,
-    required this.routeName,
     required this.color,
+    this.routeName,
+    this.pageBuilder,
+    this.onCompleted,
   });
 
   final String title;
   final String subtitle;
   final IconData icon;
-  final String routeName;
+  final String? routeName;
+  final WidgetBuilder? pageBuilder;
   final Color color;
+  final VoidCallback? onCompleted;
 
   @override
   State<_QuickActionItem> createState() => _QuickActionItemState();
@@ -278,17 +288,36 @@ class _QuickActionItem extends StatefulWidget {
 class _QuickActionItemState extends State<_QuickActionItem> {
   bool _isPressed = false;
 
-  void _goToPage() {
-    Navigator.pop(context);
+  Future<void> _goToPage() async {
+    final NavigatorState navigator = Navigator.of(context);
+
+    navigator.pop();
+
+    if (widget.pageBuilder != null) {
+      final bool? result = await navigator.push<bool>(
+        MaterialPageRoute(
+          builder: widget.pageBuilder!,
+        ),
+      );
+
+      if (result == true) {
+        widget.onCompleted?.call();
+      }
+
+      return;
+    }
+
+    final String? routeName = widget.routeName;
+
+    if (routeName == null || routeName.isEmpty) {
+      return;
+    }
 
     final String? currentRoute = ModalRoute.of(context)?.settings.name;
 
-    if (currentRoute == widget.routeName) return;
+    if (currentRoute == routeName) return;
 
-    Navigator.pushNamed(
-      context,
-      widget.routeName,
-    );
+    await navigator.pushNamed(routeName);
   }
 
   @override
@@ -342,9 +371,7 @@ class _QuickActionItemState extends State<_QuickActionItem> {
                   backgroundColor: widget.color.withValues(alpha: 0.11),
                   iconColor: widget.color,
                 ),
-
                 const SizedBox(width: 12),
-
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -360,9 +387,7 @@ class _QuickActionItemState extends State<_QuickActionItem> {
                           fontWeight: FontWeight.w900,
                         ),
                       ),
-
                       const SizedBox(height: 3),
-
                       Text(
                         widget.subtitle,
                         maxLines: 1,

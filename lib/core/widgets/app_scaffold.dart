@@ -4,6 +4,7 @@ import '../../app/theme.dart';
 import 'app_footer_nav.dart';
 import 'app_header.dart';
 import 'app_sidebar_drawer.dart';
+import 'quick_action_fab.dart';
 
 class AppScaffold extends StatelessWidget {
   const AppScaffold({
@@ -13,6 +14,8 @@ class AppScaffold extends StatelessWidget {
     this.actions,
     this.bottomNavigationBar,
     this.floatingActionButton,
+    this.showQuickActionFab = false,
+    this.onIncomeSaved,
     this.showAppBar = true,
     this.showDrawer = false,
     this.showFooter = false,
@@ -27,6 +30,22 @@ class AppScaffold extends StatelessWidget {
   final List<Widget>? actions;
   final Widget? bottomNavigationBar;
   final Widget? floatingActionButton;
+
+  /// Set true only on pages where the global quick action button is needed.
+  ///
+  /// Example:
+  /// Dashboard, Transactions.
+  ///
+  /// Keep false on Add/Edit pages.
+  final bool showQuickActionFab;
+
+  /// Callback from QuickActionFab after income is saved.
+  ///
+  /// Example:
+  /// Transactions page -> reload transactions.
+  /// Dashboard page -> reload dashboard.
+  final VoidCallback? onIncomeSaved;
+
   final bool showAppBar;
   final bool showDrawer;
   final bool showFooter;
@@ -44,10 +63,8 @@ class AppScaffold extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-
       drawerScrimColor: AppColors.black.withValues(alpha: 0.38),
       drawer: showDrawer ? const AppSidebarDrawer() : null,
-
       appBar: showAppBar
           ? useCustomHeader
               ? const AppHeader()
@@ -61,19 +78,18 @@ class AppScaffold extends StatelessWidget {
                   scrolledUnderElevation: 0,
                 )
           : null,
-
       body: safeArea ? SafeArea(child: pageBody) : pageBody,
-
       bottomNavigationBar: showFooter
           ? AppFooterNav(
               currentTab: footerTab ?? AppFooterTab.home,
             )
           : bottomNavigationBar,
-
-      // This is where QuickActionFab or any future floating button will show.
-      floatingActionButton: floatingActionButton,
-
-      // This keeps the floating button above the bottom footer area.
+      floatingActionButton: floatingActionButton ??
+          (showQuickActionFab
+              ? QuickActionFab(
+                  onIncomeSaved: onIncomeSaved,
+                )
+              : null),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }

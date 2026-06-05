@@ -22,21 +22,21 @@ class ApiEndpoints {
 
   // Income
   static const String incomes = '/incomes';
-  static const String createIncome = '/incomes';
+  static const String storeIncome = '/incomes';
   static String incomeDetails(int id) => '/incomes/$id';
   static String updateIncome(int id) => '/incomes/$id';
   static String deleteIncome(int id) => '/incomes/$id';
 
   // Expense
   static const String expenses = '/expenses';
-  static const String createExpense = '/expenses';
+  static const String storeExpense = '/expenses';
   static String expenseDetails(int id) => '/expenses/$id';
   static String updateExpense(int id) => '/expenses/$id';
   static String deleteExpense(int id) => '/expenses/$id';
 
   // Bills
   static const String bills = '/bills';
-  static const String createBill = '/bills';
+  static const String storeBill = '/bills';
   static String billDetails(int id) => '/bills/$id';
   static String updateBill(int id) => '/bills/$id';
   static String deleteBill(int id) => '/bills/$id';
@@ -61,6 +61,4 @@ class ApiEndpoints {
   static String markNotificationAsRead(int id) => '/notifications/$id/mark-as-read';
 
   static const String transactions = '/transactions';
-  static const String addIncome = '/transactions/income';
-  static const String addExpense = '/transactions/expense';
 }

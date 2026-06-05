@@ -1,0 +1,74 @@
+{
+  "success": true,
+  "message": "Income list loaded successfully",
+  "status_code": 200,
+  "code": "INCOME_LIST_LOADED",
+  "data": {
+    "summary": {
+      "total_income": 112500
+    },
+    "pagination": {
+      "current_page": 1,
+      "per_page": 10,
+      "total": 12,
+      "last_page": 2
+    },
+    "incomes": [
+      {
+        "id": 1,
+        "title": "Monthly Salary",
+        "amount": 65000,
+        "category": "Salary",
+        "received_by": "Father",
+        "account": "DBBL Bank",
+        "date": "2026-06-01",
+        "is_recurring": true,
+        "notes": "Main monthly income"
+      },
+      {
+        "id": 2,
+        "title": "Tuition Income",
+        "amount": 12000,
+        "category": "Tuition",
+        "received_by": "Sister",
+        "account": "Cash",
+        "date": "2026-06-08",
+        "is_recurring": false,
+        "notes": null
+      },
+      {
+        "id": 3,
+        "title": "Family Fund Deposit",
+        "amount": 15000,
+        "category": "Family Fund",
+        "received_by": "Brother",
+        "account": "Cash",
+        "date": "2026-06-13",
+        "is_recurring": false,
+        "notes": null
+      },
+      {
+        "id": 4,
+        "title": "Extra Income",
+        "amount": 10500,
+        "category": "Bonus",
+        "received_by": "Father",
+        "account": "DBBL Bank",
+        "date": "2026-06-17",
+        "is_recurring": false,
+        "notes": null
+      },
+      {
+        "id": 5,
+        "title": "Online Work Income",
+        "amount": 10000,
+        "category": "Freelance",
+        "received_by": "Sister",
+        "account": "DBBL Bank",
+        "date": "2026-06-23",
+        "is_recurring": false,
+        "notes": "Freelance payment"
+      }
+    ]
+  }
+}
