@@ -5,7 +5,7 @@ import '../features/auth/presentation/screens/login_screen.dart';
 
 // Later create these screens and uncomment imports
 // import '../features/auth/presentation/screens/register_screen.dart';
-// import '../features/home/presentation/screens/home_screen.dart';
+import '../features/dashboard/presentation/screens/dashboard_screen.dart';
 // import '../features/expense/presentation/screens/add_expense_screen.dart';
 // import '../features/income/presentation/screens/add_income_screen.dart';
 // import '../features/bills/presentation/screens/bills_screen.dart';
@@ -22,7 +22,7 @@ class AppRoutes {
   static const String login = '/login';
   static const String register = '/register';
   static const String familySetup = '/family-setup';
-  static const String home = '/home';
+  static const String dashboard = '/dashboard';
   static const String addExpense = '/add-expense';
 
   static const String addIncome = '/add-income';
@@ -51,10 +51,10 @@ class AppRouter {
           const LoginScreen(),
         );
 
-      case AppRoutes.home:
+      case AppRoutes.dashboard:
         return _buildRoute(
           settings,
-          const WidgetPreviewScreen(),
+          const DashboardScreen(),
         );
       // Add these after creating screens
       /*

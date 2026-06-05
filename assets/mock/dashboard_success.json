@@ -1,0 +1,71 @@
+{
+  "success": true,
+  "message": "Dashboard data loaded successfully.",
+  "data": {
+    "month": "June 2026",
+    "summary": {
+      "total_income": 85000,
+      "total_expense": 52000,
+      "remaining_balance": 33000,
+      "total_savings": 12000
+    },
+    "expense_categories": [
+      {
+        "name": "Grocery",
+        "amount": 12000,
+        "budget": 18000,
+        "icon": "grocery"
+      },
+      {
+        "name": "House Rent",
+        "amount": 25000,
+        "budget": 25000,
+        "icon": "rent"
+      },
+      {
+        "name": "Electricity Bill",
+        "amount": 2500,
+        "budget": 4000,
+        "icon": "electricity"
+      },
+      {
+        "name": "Medical",
+        "amount": 5000,
+        "budget": 10000,
+        "icon": "medical"
+      },
+      {
+        "name": "Village Family Support",
+        "amount": 7500,
+        "budget": 10000,
+        "icon": "family"
+      }
+    ],
+    "recent_transactions": [
+      {
+        "id": 1,
+        "title": "Salary",
+        "subtitle": "Income • Husband • 01 Jun 2026",
+        "amount": 65000,
+        "type": "income",
+        "icon": "salary"
+      },
+      {
+        "id": 2,
+        "title": "House Rent",
+        "subtitle": "Expense • Joint • 05 Jun 2026",
+        "amount": 25000,
+        "type": "expense",
+        "icon": "rent"
+      },
+      {
+        "id": 3,
+        "title": "Grocery",
+        "subtitle": "Expense • Wife • 06 Jun 2026",
+        "amount": 4500,
+        "type": "expense",
+        "icon": "grocery"
+      }
+    ]
+  }
+}

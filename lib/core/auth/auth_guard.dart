@@ -14,7 +14,7 @@ class AuthGuard {
     final bool isLoggedIn = await isAuthenticated();
 
     if (isLoggedIn) {
-      return AppRoutes.home;
+      return AppRoutes.dashboard;
     }
 
     return AppRoutes.login;
@@ -36,7 +36,7 @@ class AuthGuard {
 
     Navigator.pushReplacementNamed(
       context,
-      AppRoutes.home,
+      AppRoutes.dashboard,
     );
   }
 

@@ -1,0 +1,15 @@
+{
+  "success": true,
+  "message": "Dashboard data loaded successfully.",
+  "data": {
+    "month": "June 2026",
+    "summary": {
+      "total_income": 0,
+      "total_expense": 0,
+      "remaining_balance": 0,
+      "total_savings": 0
+    },
+    "expense_categories": [],
+    "recent_transactions": []
+  }
+}
