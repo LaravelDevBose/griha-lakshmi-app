@@ -60,21 +60,12 @@ class MoneyHelper {
     return amount > 0;
   }
 
-  static num calculateBalance({
-    required num income,
-    required num expense,
-  }) {
+  static num calculateBalance({required num income, required num expense}) {
     return income - expense;
   }
 
-  static num calculateSavings({
-    required num income,
-    required num expense,
-  }) {
-    final num balance = calculateBalance(
-      income: income,
-      expense: expense,
-    );
+  static num calculateSavings({required num income, required num expense}) {
+    final num balance = calculateBalance(income: income, expense: expense);
 
     return balance < 0 ? 0 : balance;
   }
@@ -100,10 +91,7 @@ class MoneyHelper {
     return percentage;
   }
 
-  static double calculateProgress({
-    required num current,
-    required num target,
-  }) {
+  static double calculateProgress({required num current, required num target}) {
     if (target <= 0) {
       return 0;
     }
@@ -121,17 +109,11 @@ class MoneyHelper {
     return progress;
   }
 
-  static String formatPercentage(
-    num value, {
-    int decimal = 0,
-  }) {
+  static String formatPercentage(num value, {int decimal = 0}) {
     return '${value.toStringAsFixed(decimal)}%';
   }
 
-  static String _formatNumber(
-    num amount, {
-    required bool showDecimal,
-  }) {
+  static String _formatNumber(num amount, {required bool showDecimal}) {
     final String fixedAmount = showDecimal
         ? amount.toStringAsFixed(2)
         : amount.round().toString();
@@ -165,5 +147,26 @@ class MoneyHelper {
     }
 
     return buffer.toString().split('').reversed.join();
+  }
+
+  static String formatCompactAmount(
+    num amount, {
+    String currency = AppConstants.defaultCurrency,
+  }) {
+    final num absAmount = amount.abs();
+
+    if (absAmount >= 10000000) {
+      return '$currency${(amount / 10000000).toStringAsFixed(1)}Cr';
+    }
+
+    if (absAmount >= 100000) {
+      return '$currency${(amount / 100000).toStringAsFixed(1)}L';
+    }
+
+    if (absAmount >= 1000) {
+      return '$currency${(amount / 1000).toStringAsFixed(1)}K';
+    }
+
+    return formatAmount(amount, currency: currency);
   }
 }

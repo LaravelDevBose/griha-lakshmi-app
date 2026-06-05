@@ -2,17 +2,20 @@ import '../../domain/entities/dashboard.dart';
 import 'dashboard_summary_model.dart';
 import 'expense_category_model.dart';
 import 'recent_transaction_model.dart';
+import 'upcoming_reminder_model.dart';
 
 class DashboardModel {
   const DashboardModel({
     required this.month,
     required this.summary,
+    required this.upcomingReminders,
     required this.expenseCategories,
     required this.recentTransactions,
   });
 
   final String month;
   final DashboardSummaryModel summary;
+  final List<UpcomingReminderModel> upcomingReminders;
   final List<ExpenseCategoryModel> expenseCategories;
   final List<RecentTransactionModel> recentTransactions;
 
@@ -28,6 +31,9 @@ class DashboardModel {
       summary: DashboardSummaryModel.fromJson(
         _asMap(data['summary']),
       ),
+      upcomingReminders: _parseUpcomingReminders(
+        data['upcoming_reminders'],
+      ),
       expenseCategories: _parseExpenseCategories(
         data['expense_categories'],
       ),
@@ -41,6 +47,9 @@ class DashboardModel {
     return Dashboard(
       month: month,
       summary: summary.toEntity(),
+      upcomingReminders: upcomingReminders
+          .map((item) => item.toEntity())
+          .toList(),
       expenseCategories: expenseCategories
           .map((category) => category.toEntity())
           .toList(),
@@ -58,29 +67,42 @@ class DashboardModel {
     return <String, dynamic>{};
   }
 
-  static List<ExpenseCategoryModel> _parseExpenseCategories(dynamic value) {
-    if (value is! List) {
-      return [];
-    }
+  static List<UpcomingReminderModel> _parseUpcomingReminders(dynamic value) {
+    if (value is! List) return [];
 
     return value
         .whereType<Map>()
-        .map((item) => ExpenseCategoryModel.fromJson(
-              Map<String, dynamic>.from(item),
-            ))
+        .map(
+          (item) => UpcomingReminderModel.fromJson(
+            Map<String, dynamic>.from(item),
+          ),
+        )
+        .toList();
+  }
+
+  static List<ExpenseCategoryModel> _parseExpenseCategories(dynamic value) {
+    if (value is! List) return [];
+
+    return value
+        .whereType<Map>()
+        .map(
+          (item) => ExpenseCategoryModel.fromJson(
+            Map<String, dynamic>.from(item),
+          ),
+        )
         .toList();
   }
 
   static List<RecentTransactionModel> _parseRecentTransactions(dynamic value) {
-    if (value is! List) {
-      return [];
-    }
+    if (value is! List) return [];
 
     return value
         .whereType<Map>()
-        .map((item) => RecentTransactionModel.fromJson(
-              Map<String, dynamic>.from(item),
-            ))
+        .map(
+          (item) => RecentTransactionModel.fromJson(
+            Map<String, dynamic>.from(item),
+          ),
+        )
         .toList();
   }
 }

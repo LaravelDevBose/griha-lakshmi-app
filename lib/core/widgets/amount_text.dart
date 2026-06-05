@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../app/app_constants.dart';
 import '../../app/theme.dart';
+import '../helpers/money_helper.dart';
 
 enum AmountTextType {
   normal,
@@ -19,6 +20,8 @@ class AmountText extends StatelessWidget {
     this.fontSize = 20,
     this.fontWeight = FontWeight.w700,
     this.showPlusMinus = false,
+    this.compact = false,
+    this.maxLines = 1,
   });
 
   final num amount;
@@ -27,16 +30,26 @@ class AmountText extends StatelessWidget {
   final double fontSize;
   final FontWeight fontWeight;
   final bool showPlusMinus;
+  final bool compact;
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
     final String prefix = _prefix;
-    final String formattedAmount = amount.toStringAsFixed(
-      amount.truncateToDouble() == amount ? 0 : 2,
-    );
+    final String formattedAmount = compact
+        ? MoneyHelper.formatCompactAmount(
+            amount,
+            currency: currency,
+          )
+        : MoneyHelper.formatAmount(
+            amount,
+            currency: currency,
+          );
 
     return Text(
-      '$prefix$currency$formattedAmount',
+      '$prefix$formattedAmount',
+      maxLines: maxLines,
+      overflow: TextOverflow.ellipsis,
       style: TextStyle(
         color: _color,
         fontSize: fontSize,

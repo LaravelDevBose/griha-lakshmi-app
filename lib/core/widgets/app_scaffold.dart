@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
+import 'app_footer_nav.dart';
+import 'app_header.dart';
+import 'app_sidebar_drawer.dart';
 
 class AppScaffold extends StatelessWidget {
   const AppScaffold({
@@ -11,8 +14,13 @@ class AppScaffold extends StatelessWidget {
     this.bottomNavigationBar,
     this.floatingActionButton,
     this.showAppBar = true,
+    this.showDrawer = false,
+    this.showFooter = false,
+    this.footerTab,
     this.safeArea = true,
     this.padding = const EdgeInsets.symmetric(horizontal: 24),
+    this.useCustomHeader = false,
+    this.notificationCount = 0,
   });
 
   final Widget body;
@@ -21,8 +29,13 @@ class AppScaffold extends StatelessWidget {
   final Widget? bottomNavigationBar;
   final Widget? floatingActionButton;
   final bool showAppBar;
+  final bool showDrawer;
+  final bool showFooter;
+  final AppFooterTab? footerTab;
   final bool safeArea;
   final EdgeInsetsGeometry padding;
+  final bool useCustomHeader;
+  final int notificationCount;
 
   @override
   Widget build(BuildContext context) {
@@ -33,14 +46,23 @@ class AppScaffold extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      drawer: showDrawer ? const AppSidebarDrawer() : null,
       appBar: showAppBar
-          ? AppBar(
-              title: title == null ? null : Text(title!),
-              actions: actions,
-            )
+          ? useCustomHeader
+              ? AppHeader(
+                  notificationCount: notificationCount,
+                )
+              : AppBar(
+                  title: title == null ? null : Text(title!),
+                  actions: actions,
+                )
           : null,
       body: safeArea ? SafeArea(child: pageBody) : pageBody,
-      bottomNavigationBar: bottomNavigationBar,
+      bottomNavigationBar: showFooter
+          ? AppFooterNav(
+              currentTab: footerTab ?? AppFooterTab.home,
+            )
+          : bottomNavigationBar,
       floatingActionButton: floatingActionButton,
     );
   }

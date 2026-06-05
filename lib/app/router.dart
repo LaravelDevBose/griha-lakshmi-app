@@ -22,7 +22,7 @@ class AppRoutes {
   static const String login = '/login';
   static const String register = '/register';
   static const String familySetup = '/family-setup';
-  static const String dashboard = '/dashboard';
+  static const String home = '/dashboard';
   static const String addExpense = '/add-expense';
 
   static const String addIncome = '/add-income';
@@ -51,7 +51,7 @@ class AppRouter {
           const LoginScreen(),
         );
 
-      case AppRoutes.dashboard:
+      case AppRoutes.home:
         return _buildRoute(
           settings,
           const DashboardScreen(),

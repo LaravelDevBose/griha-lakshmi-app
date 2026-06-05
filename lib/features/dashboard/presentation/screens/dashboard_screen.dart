@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../app/app_config.dart';
 import '../../../../app/router.dart';
 import '../../../../app/theme.dart';
 import '../../../../core/api/api.dart';
@@ -11,6 +10,7 @@ import '../../data/repositories/dashboard_repository_impl.dart';
 import '../../domain/entities/dashboard.dart';
 import '../../domain/entities/expense_category.dart';
 import '../../domain/entities/recent_transaction.dart';
+import '../../domain/entities/upcoming_reminder.dart';
 import '../controllers/dashboard_controller.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -65,23 +65,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      title: 'Dashboard',
-      actions: [
-        IconButton(
-          onPressed: _controller.isLoading
-              ? null
-              : () {
-                  _controller.refreshDashboard();
-                },
-          icon: const Icon(Icons.refresh_rounded),
-        ),
-        IconButton(
-          onPressed: () async {
-            await AuthGuard.logout(context);
-          },
-          icon: const Icon(Icons.logout_rounded),
-        ),
-      ],
+      useCustomHeader: true,
+      showDrawer: true,
+      showFooter: true,
+      footerTab: AppFooterTab.home,
+      notificationCount: 3,
       body: _buildBody(),
     );
   }
@@ -106,14 +94,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
       return EmptyState(
         title: 'No dashboard data yet',
         message:
-            'Start adding income and expenses to see your family finance overview here.',
+            'Start adding income, expenses and bills to see your family finance overview.',
         icon: Icons.dashboard_outlined,
         buttonText: 'Add Expense',
         onButtonPressed: () {
-          Navigator.pushNamed(
-            context,
-            AppRoutes.addExpense,
-          );
+          Navigator.pushNamed(context, AppRoutes.addExpense);
         },
       );
     }
@@ -153,52 +138,34 @@ class _DashboardContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _DashboardGreeting(month: dashboard.month),
+        _DashboardGreeting(
+          month: dashboard.month,
+          todayCount: dashboard.todayReminders.length,
+        ),
 
-        const SizedBox(height: 24),
+        const SizedBox(height: 18),
 
         _SummaryGrid(dashboard: dashboard),
 
-        const SizedBox(height: 28),
+        const SizedBox(height: 22),
 
-        SectionHeader(
-          title: 'Quick Actions',
-          subtitle: AppConfig.useMockData
-              ? 'Mock mode is active. Data is loaded from JSON.'
-              : 'Connected with your API.',
+        _UpcomingReminderSection(
+          reminders: dashboard.upcomingReminders,
         ),
 
-        const SizedBox(height: 16),
+        const SizedBox(height: 22),
 
-        const _QuickActions(),
-
-        const SizedBox(height: 28),
-
-        const SectionHeader(
-          title: 'This Month’s Expenses',
-          subtitle: 'Category-wise budget progress.',
-        ),
-
-        const SizedBox(height: 16),
-
-        _ExpenseCategoryList(
+        _ExpenseCategorySection(
           categories: dashboard.expenseCategories,
         ),
 
-        const SizedBox(height: 28),
+        const SizedBox(height: 22),
 
-        const SectionHeader(
-          title: 'Recent Transactions',
-          subtitle: 'Latest income and expense records.',
-        ),
-
-        const SizedBox(height: 16),
-
-        _RecentTransactionList(
+        _RecentTransactionSection(
           transactions: dashboard.recentTransactions,
         ),
 
-        const SizedBox(height: 40),
+        const SizedBox(height: 26),
       ],
     );
   }
@@ -207,14 +174,16 @@ class _DashboardContent extends StatelessWidget {
 class _DashboardGreeting extends StatelessWidget {
   const _DashboardGreeting({
     required this.month,
+    required this.todayCount,
   });
 
   final String month;
+  final int todayCount;
 
   @override
   Widget build(BuildContext context) {
     return AppCard(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(18),
       backgroundColor: AppColors.primary,
       borderColor: AppColors.primary,
       child: Row(
@@ -227,22 +196,47 @@ class _DashboardGreeting extends StatelessWidget {
                   'Hello, Arup',
                   style: TextStyle(
                     color: AppColors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w900,
                   ),
                 ),
-                const SizedBox(height: 6),
+
+                const SizedBox(height: 5),
+
                 Text(
                   month,
                   style: TextStyle(
-                    color: AppColors.white.withOpacity(0.82),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+                    color: AppColors.white.withOpacity(0.80),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
+
+                if (todayCount > 0) ...[
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.white.withOpacity(0.14),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: Text(
+                      '$todayCount item${todayCount > 1 ? 's' : ''} need attention today',
+                      style: const TextStyle(
+                        color: AppColors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
+
           AppIconBox(
             icon: Icons.family_restroom_rounded,
             backgroundColor: AppColors.white.withOpacity(0.14),
@@ -265,12 +259,14 @@ class _SummaryGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final summary = dashboard.summary;
 
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: SummaryCard(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final bool useTwoColumns = constraints.maxWidth >= 340;
+
+        if (!useTwoColumns) {
+          return Column(
+            children: [
+              SummaryCard(
                 title: 'Income',
                 amount: summary.totalIncome,
                 icon: Icons.trending_up_rounded,
@@ -279,10 +275,8 @@ class _SummaryGrid extends StatelessWidget {
                 iconColor: AppColors.success,
                 subtitle: 'This month',
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: SummaryCard(
+              const SizedBox(height: 10),
+              SummaryCard(
                 title: 'Expense',
                 amount: summary.totalExpense,
                 icon: Icons.trending_down_rounded,
@@ -291,24 +285,15 @@ class _SummaryGrid extends StatelessWidget {
                 iconColor: AppColors.danger,
                 subtitle: 'This month',
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: SummaryCard(
+              const SizedBox(height: 10),
+              SummaryCard(
                 title: 'Balance',
                 amount: summary.remainingBalance,
                 icon: Icons.account_balance_wallet_rounded,
-                amountType: AmountTextType.normal,
                 subtitle: 'Remaining',
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: SummaryCard(
+              const SizedBox(height: 10),
+              SummaryCard(
                 title: 'Savings',
                 amount: summary.totalSavings,
                 icon: Icons.savings_outlined,
@@ -317,113 +302,149 @@ class _SummaryGrid extends StatelessWidget {
                 iconColor: AppColors.warning,
                 subtitle: 'Saved',
               ),
+            ],
+          );
+        }
+
+        return Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: SummaryCard(
+                    title: 'Income',
+                    amount: summary.totalIncome,
+                    icon: Icons.trending_up_rounded,
+                    amountType: AmountTextType.income,
+                    iconBackgroundColor: AppColors.success.withOpacity(0.10),
+                    iconColor: AppColors.success,
+                    subtitle: 'This month',
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: SummaryCard(
+                    title: 'Expense',
+                    amount: summary.totalExpense,
+                    icon: Icons.trending_down_rounded,
+                    amountType: AmountTextType.expense,
+                    iconBackgroundColor: AppColors.danger.withOpacity(0.10),
+                    iconColor: AppColors.danger,
+                    subtitle: 'This month',
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: SummaryCard(
+                    title: 'Balance',
+                    amount: summary.remainingBalance,
+                    icon: Icons.account_balance_wallet_rounded,
+                    subtitle: 'Remaining',
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: SummaryCard(
+                    title: 'Savings',
+                    amount: summary.totalSavings,
+                    icon: Icons.savings_outlined,
+                    amountType: AmountTextType.warning,
+                    iconBackgroundColor: AppColors.warning.withOpacity(0.10),
+                    iconColor: AppColors.warning,
+                    subtitle: 'Saved',
+                  ),
+                ),
+              ],
             ),
           ],
+        );
+      },
+    );
+  }
+}
+
+class _UpcomingReminderSection extends StatelessWidget {
+  const _UpcomingReminderSection({
+    required this.reminders,
+  });
+
+  final List<UpcomingReminder> reminders;
+
+  @override
+  Widget build(BuildContext context) {
+    final List<UpcomingReminder> sortedReminders = [...reminders];
+
+    sortedReminders.sort((a, b) {
+      if (a.isToday && !b.isToday) return -1;
+      if (!a.isToday && b.isToday) return 1;
+
+      final DateTime aDate = a.dueDate ?? DateTime(2999);
+      final DateTime bDate = b.dueDate ?? DateTime(2999);
+
+      return aDate.compareTo(bDate);
+    });
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SectionHeader(
+          title: 'Upcoming',
+          subtitle: 'Bills and purchase reminders.',
         ),
+
+        const SizedBox(height: 12),
+
+        if (sortedReminders.isEmpty)
+          const AppCard(
+            showShadow: false,
+            child: EmptyState(
+              title: 'No upcoming reminder',
+              message: 'Bills and purchase reminders will appear here.',
+              icon: Icons.notifications_none_rounded,
+            ),
+          )
+        else
+          Column(
+            children: sortedReminders.take(3).map((item) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: UpcomingReminderTile(
+                  title: item.title,
+                  note: item.note,
+                  amount: item.amount,
+                  dueDate: item.dueDate,
+                  icon: _reminderIcon(item.icon),
+                  isToday: item.isToday,
+                ),
+              );
+            }).toList(),
+          ),
       ],
     );
   }
-}
 
-class _QuickActions extends StatelessWidget {
-  const _QuickActions();
-
-  @override
-  Widget build(BuildContext context) {
-    return AppCard(
-      padding: const EdgeInsets.all(16),
-      child: Wrap(
-        spacing: 12,
-        runSpacing: 12,
-        children: [
-          _QuickActionItem(
-            title: 'Add Income',
-            icon: Icons.add_card_rounded,
-            onTap: () {
-              Navigator.pushNamed(context, AppRoutes.addIncome);
-            },
-          ),
-          _QuickActionItem(
-            title: 'Add Expense',
-            icon: Icons.receipt_long_outlined,
-            onTap: () {
-              Navigator.pushNamed(context, AppRoutes.addExpense);
-            },
-          ),
-          _QuickActionItem(
-            title: 'Bills',
-            icon: Icons.payments_outlined,
-            onTap: () {
-              Navigator.pushNamed(context, AppRoutes.bills);
-            },
-          ),
-          _QuickActionItem(
-            title: 'Reports',
-            icon: Icons.bar_chart_rounded,
-            onTap: () {
-              Navigator.pushNamed(context, AppRoutes.reports);
-            },
-          ),
-        ],
-      ),
-    );
+  IconData _reminderIcon(String icon) {
+    switch (icon) {
+      case 'electricity':
+        return Icons.electric_bolt_rounded;
+      case 'grocery':
+        return Icons.shopping_basket_outlined;
+      case 'wifi':
+        return Icons.wifi_rounded;
+      case 'rent':
+        return Icons.home_outlined;
+      default:
+        return Icons.notifications_none_rounded;
+    }
   }
 }
 
-class _QuickActionItem extends StatelessWidget {
-  const _QuickActionItem({
-    required this.title,
-    required this.icon,
-    required this.onTap,
-  });
-
-  final String title;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 130,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(18),
-        child: Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: AppColors.background,
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              color: AppColors.border,
-            ),
-          ),
-          child: Column(
-            children: [
-              AppIconBox(
-                icon: icon,
-                size: 44,
-                iconSize: 22,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ExpenseCategoryList extends StatelessWidget {
-  const _ExpenseCategoryList({
+class _ExpenseCategorySection extends StatelessWidget {
+  const _ExpenseCategorySection({
     required this.categories,
   });
 
@@ -431,30 +452,59 @@ class _ExpenseCategoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (categories.isEmpty) {
-      return const AppCard(
-        child: EmptyState(
-          title: 'No expense categories',
-          message: 'Add expenses to see category-wise progress.',
-          icon: Icons.category_outlined,
-        ),
-      );
-    }
-
     return Column(
-      children: categories.map((category) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: ProgressInfoCard(
-            title: category.name,
-            subtitle: 'This month spending',
-            currentAmount: category.amount,
-            targetAmount: category.budget,
-            progressColor: _categoryColor(category.icon),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SectionHeader(
+          title: 'This Month Expenses',
+          subtitle: 'Compact budget progress.',
+        ),
+
+        const SizedBox(height: 12),
+
+        if (categories.isEmpty)
+          const AppCard(
+            showShadow: false,
+            child: EmptyState(
+              title: 'No expenses yet',
+              message: 'Add expenses to see category progress.',
+              icon: Icons.category_outlined,
+            ),
+          )
+        else
+          Column(
+            children: categories.take(4).map((category) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: ExpenseProgressTile(
+                  title: category.name,
+                  amount: category.amount,
+                  budget: category.budget,
+                  icon: _categoryIcon(category.icon),
+                  progressColor: _categoryColor(category.icon),
+                ),
+              );
+            }).toList(),
           ),
-        );
-      }).toList(),
+      ],
     );
+  }
+
+  IconData _categoryIcon(String icon) {
+    switch (icon) {
+      case 'grocery':
+        return Icons.shopping_basket_outlined;
+      case 'rent':
+        return Icons.home_outlined;
+      case 'electricity':
+        return Icons.electric_bolt_rounded;
+      case 'medical':
+        return Icons.medical_services_outlined;
+      case 'family':
+        return Icons.family_restroom_rounded;
+      default:
+        return Icons.category_outlined;
+    }
   }
 
   Color _categoryColor(String icon) {
@@ -471,8 +521,8 @@ class _ExpenseCategoryList extends StatelessWidget {
   }
 }
 
-class _RecentTransactionList extends StatelessWidget {
-  const _RecentTransactionList({
+class _RecentTransactionSection extends StatelessWidget {
+  const _RecentTransactionSection({
     required this.transactions,
   });
 
@@ -480,31 +530,43 @@ class _RecentTransactionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (transactions.isEmpty) {
-      return const AppCard(
-        child: EmptyState(
-          title: 'No transactions yet',
-          message: 'Your latest income and expenses will appear here.',
-          icon: Icons.receipt_long_outlined,
-        ),
-      );
-    }
-
     return Column(
-      children: transactions.map((transaction) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: TransactionTile(
-            title: transaction.title,
-            subtitle: transaction.subtitle,
-            amount: transaction.amount,
-            type: transaction.type == RecentTransactionType.income
-                ? TransactionType.income
-                : TransactionType.expense,
-            icon: _transactionIcon(transaction.icon),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SectionHeader(
+          title: 'Recent Transactions',
+          subtitle: 'Latest records.',
+        ),
+
+        const SizedBox(height: 12),
+
+        if (transactions.isEmpty)
+          const AppCard(
+            showShadow: false,
+            child: EmptyState(
+              title: 'No transactions',
+              message: 'Your income and expense records will appear here.',
+              icon: Icons.receipt_long_outlined,
+            ),
+          )
+        else
+          Column(
+            children: transactions.take(4).map((transaction) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: CompactTransactionTile(
+                  title: transaction.title,
+                  subtitle: transaction.subtitle,
+                  amount: transaction.amount,
+                  type: transaction.type == RecentTransactionType.income
+                      ? CompactTransactionType.income
+                      : CompactTransactionType.expense,
+                  icon: _transactionIcon(transaction.icon),
+                ),
+              );
+            }).toList(),
           ),
-        );
-      }).toList(),
+      ],
     );
   }
 
