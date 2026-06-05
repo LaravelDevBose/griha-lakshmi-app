@@ -26,3 +26,5 @@ export 'notification_sheet.dart';
 export 'expense_progress_tile.dart';
 export 'compact_transaction_tile.dart';
 export 'upcoming_reminder_tile.dart';
+
+export 'quick_action_fab.dart';

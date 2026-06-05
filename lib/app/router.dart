@@ -24,8 +24,9 @@ class AppRoutes {
   static const String familySetup = '/family-setup';
   static const String home = '/dashboard';
   static const String addExpense = '/add-expense';
-
   static const String addIncome = '/add-income';
+  static const String addPurchase = '/add-purchase';
+  static const String addReminder = '/add-reminder';
   static const String bills = '/bills';
   static const String reports = '/reports';
   static const String savingsGoal = '/savings-goal';

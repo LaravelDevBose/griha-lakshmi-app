@@ -44,7 +44,8 @@ class AppScaffold extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      drawerScrimColor: AppColors.black.withOpacity(0.38),
+
+      drawerScrimColor: AppColors.black.withValues(alpha: 0.38),
       drawer: showDrawer ? const AppSidebarDrawer() : null,
 
       appBar: showAppBar
@@ -69,7 +70,11 @@ class AppScaffold extends StatelessWidget {
             )
           : bottomNavigationBar,
 
+      // This is where QuickActionFab or any future floating button will show.
       floatingActionButton: floatingActionButton,
+
+      // This keeps the floating button above the bottom footer area.
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

@@ -70,6 +70,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       showFooter: true,
       footerTab: AppFooterTab.home,
       padding: const EdgeInsets.symmetric(horizontal: 16),
+      floatingActionButton: const QuickActionFab(),
       body: _buildBody(),
     );
   }
