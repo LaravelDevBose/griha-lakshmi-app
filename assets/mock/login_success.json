@@ -1,0 +1,20 @@
+{
+  "success": true,
+  "message": "Login successful.",
+  "data": {
+    "token": "mock_user_token_123456",
+    "user": {
+      "id": 1,
+      "name": "Arup",
+      "email": "arup@example.com",
+      "phone": "01700000000",
+      "role": "husband",
+      "family_id": 1
+    },
+    "family": {
+      "id": 1,
+      "name": "Arup Family",
+      "currency": "BDT"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "success": false,
+  "status_code": 422,
+  "code": "VALIDATION_ERROR",
+  "message": "Validation failed. Please check your input.",
+  "errors": {
+    "email": [
+      "Email is required."
+    ],
+    "password": [
+      "Password must be at least 8 characters."
+    ]
+  }
+}
