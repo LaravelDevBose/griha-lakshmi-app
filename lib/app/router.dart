@@ -17,9 +17,8 @@ import '../features/income/presentation/screens/add_edit_income_screen.dart';
 
 import '../features/planner/presentation/screens/planner_screen.dart';
 import '../../features/purchase_planner/presentation/screens/purchase_planner_list_screen.dart';
-
-
 import '../features/bills/presentation/screens/bill_list_screen.dart';
+import '../features/loans/presentation/screens/loan_list_screen.dart';
 // import '../features/bills/presentation/screens/add_edit_bill_screen.dart';
 // import '../features/reports/presentation/screens/reports_screen.dart';
 // import '../features/profile/presentation/screens/profile_screen.dart';
@@ -126,6 +125,11 @@ class AppRouter {
         return _buildRoute(
           settings,
           const PurchasePlannerListScreen(),
+        );
+      case AppRoutes.loans:
+        return _buildRoute(
+          settings,
+          const LoanListScreen(),
         );
       // Add these after creating screens
       /*

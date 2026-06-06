@@ -38,15 +38,10 @@ class ApiEndpoints {
   // Purchase Planner
   static const String purchasePlannerItems = '/purchase-planner/items';
   static const String storePurchasePlannerItem = '/purchase-planner/items';
-
   static String updatePurchasePlannerItem(int id) => '/purchase-planner/items/$id';
-
   static String deletePurchasePlannerItem(int id) => '/purchase-planner/items/$id';
-
   static String assignPurchasePlannerItem(int id) => '/purchase-planner/items/$id/assign';
-
   static String markPurchasePlannerItemPurchased(int id) => '/purchase-planner/items/$id/mark-purchased';
-
   static String cancelPurchasePlannerItem(int id) => '/purchase-planner/items/$id/cancel';
 
   // Bills
@@ -57,6 +52,14 @@ class ApiEndpoints {
   static String deleteBill(int id) => '/bills/$id';
   static String markBillPaid(int id) => '/bills/$id/mark-paid';
   static String snoozeBillReminder(int id) => '/bills/$id/snooze';
+
+  //loans
+  static const String loans = '/loans';
+  static const String storeLoan = '/loans';
+  static String updateLoan(int id) => '/loans/$id';
+  static String deleteLoan(int id) => '/loans/$id';
+  static String recordLoanPayment(int id) => '/loans/$id/record-payment';
+
 
   // Savings Goal
   static const String savingsGoals = '/savings-goals';

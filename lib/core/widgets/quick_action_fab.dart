@@ -6,6 +6,7 @@ import '../../features/expense/presentation/screens/add_edit_expense_screen.dart
 import '../../features/income/presentation/screens/add_edit_income_screen.dart';
 import '../../features/bills/presentation/screens/add_edit_bill_screen.dart';
 import '../../features/purchase_planner/presentation/screens/add_edit_purchase_item_screen.dart';
+import '../../features/loans/presentation/screens/add_edit_loan_screen.dart';
 import 'app_icon_box.dart';
 
 class QuickActionFab extends StatefulWidget {
@@ -14,6 +15,7 @@ class QuickActionFab extends StatefulWidget {
     this.onBillSaved,
     this.onExpenseSaved,
     this.onPurchaseSaved,
+    this.onLoanSaved,
     super.key,
   });
 
@@ -21,6 +23,7 @@ class QuickActionFab extends StatefulWidget {
   final VoidCallback? onBillSaved;
   final VoidCallback? onPurchaseSaved;
   final VoidCallback? onExpenseSaved;
+  final VoidCallback? onLoanSaved;
 
   @override
   State<QuickActionFab> createState() => _QuickActionFabState();
@@ -73,6 +76,7 @@ class _QuickActionFabState extends State<QuickActionFab>
           onBillSaved: widget.onBillSaved,
           onExpenseSaved: widget.onExpenseSaved,
           onPurchaseSaved: widget.onPurchaseSaved,
+          onLoanSaved: widget.onLoanSaved,
         );
       },
     );
@@ -135,12 +139,14 @@ class _QuickActionSheet extends StatelessWidget {
     this.onBillSaved,
     this.onExpenseSaved,
     this.onPurchaseSaved,
+    this.onLoanSaved,
   });
 
   final VoidCallback? onIncomeSaved;
   final VoidCallback? onBillSaved;
   final VoidCallback? onExpenseSaved;
   final VoidCallback? onPurchaseSaved;
+  final VoidCallback? onLoanSaved;
 
   @override
   Widget build(BuildContext context) {
@@ -250,6 +256,14 @@ class _QuickActionSheet extends StatelessWidget {
                     color: AppColors.primary,
                     pageBuilder: (_) => const AddEditPurchaseItemScreen(),
                     onCompleted: onPurchaseSaved,
+                  ),
+                  _QuickActionItem(
+                    title: 'Loan',
+                    subtitle: 'Borrowed money',
+                    icon: Icons.account_balance_rounded,
+                    color: AppColors.danger,
+                    pageBuilder: (_) => const AddEditLoanScreen(),
+                    onCompleted: onLoanSaved,
                   ),
                   const _QuickActionItem(
                     title: 'Reminder',
