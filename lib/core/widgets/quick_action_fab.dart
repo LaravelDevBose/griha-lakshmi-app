@@ -7,6 +7,7 @@ import '../../features/income/presentation/screens/add_edit_income_screen.dart';
 import '../../features/bills/presentation/screens/add_edit_bill_screen.dart';
 import '../../features/purchase_planner/presentation/screens/add_edit_purchase_item_screen.dart';
 import '../../features/loans/presentation/screens/add_edit_loan_screen.dart';
+import '../../features/credit_cards/presentation/screens/add_edit_credit_card_screen.dart';
 import 'app_icon_box.dart';
 
 class QuickActionFab extends StatefulWidget {
@@ -16,6 +17,7 @@ class QuickActionFab extends StatefulWidget {
     this.onExpenseSaved,
     this.onPurchaseSaved,
     this.onLoanSaved,
+    this.onCreditCardSaved,
     super.key,
   });
 
@@ -24,7 +26,7 @@ class QuickActionFab extends StatefulWidget {
   final VoidCallback? onPurchaseSaved;
   final VoidCallback? onExpenseSaved;
   final VoidCallback? onLoanSaved;
-
+  final VoidCallback? onCreditCardSaved;
   @override
   State<QuickActionFab> createState() => _QuickActionFabState();
 }
@@ -77,6 +79,7 @@ class _QuickActionFabState extends State<QuickActionFab>
           onExpenseSaved: widget.onExpenseSaved,
           onPurchaseSaved: widget.onPurchaseSaved,
           onLoanSaved: widget.onLoanSaved,
+          onCreditCardSaved: widget.onCreditCardSaved,
         );
       },
     );
@@ -140,6 +143,7 @@ class _QuickActionSheet extends StatelessWidget {
     this.onExpenseSaved,
     this.onPurchaseSaved,
     this.onLoanSaved,
+    this.onCreditCardSaved,
   });
 
   final VoidCallback? onIncomeSaved;
@@ -147,7 +151,7 @@ class _QuickActionSheet extends StatelessWidget {
   final VoidCallback? onExpenseSaved;
   final VoidCallback? onPurchaseSaved;
   final VoidCallback? onLoanSaved;
-
+  final VoidCallback? onCreditCardSaved;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -280,7 +284,14 @@ class _QuickActionSheet extends StatelessWidget {
                     pageBuilder: (_) => const AddEditIncomeScreen(),
                     onCompleted: onIncomeSaved,
                   ),
-                  
+                  _QuickActionItem(
+                    title: 'Credit Card',
+                    subtitle: 'Manage cards',
+                    icon: Icons.credit_card_rounded,
+                    color: AppColors.primary,
+                    pageBuilder: (_) => const AddEditCreditCardScreen(),
+                    onCompleted: onCreditCardSaved,
+                  ),
                   const _QuickActionItem(
                     title: 'Savings',
                     subtitle: 'Goal deposit',

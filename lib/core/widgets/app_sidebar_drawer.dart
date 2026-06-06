@@ -91,6 +91,11 @@ class AppSidebarDrawer extends StatelessWidget {
                         routeName: AppRoutes.purchasePlanner,
                       ),
                       _DrawerItem(
+                        icon: Icons.credit_card_rounded,
+                        title: 'Credit Cards',
+                        routeName: AppRoutes.creditCards,
+                      ),
+                      _DrawerItem(
                         icon: Icons.savings_rounded,
                         title: 'Savings Goal',
                         routeName: AppRoutes.savingsGoal,

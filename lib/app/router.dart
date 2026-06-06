@@ -19,7 +19,7 @@ import '../features/planner/presentation/screens/planner_screen.dart';
 import '../../features/purchase_planner/presentation/screens/purchase_planner_list_screen.dart';
 import '../features/bills/presentation/screens/bill_list_screen.dart';
 import '../features/loans/presentation/screens/loan_list_screen.dart';
-// import '../features/bills/presentation/screens/add_edit_bill_screen.dart';
+import '../features/credit_cards/presentation/screens/credit_card_list_screen.dart';
 // import '../features/reports/presentation/screens/reports_screen.dart';
 // import '../features/profile/presentation/screens/profile_screen.dart';
 
@@ -47,6 +47,7 @@ class AppRoutes {
   static const String purchasePlanner = '/purchase-planner';
   static const String loans = '/loans';
   static const String creditCards = '/credit-cards';
+  static const String addCreditCard = '/add-credit-card';
 
   static const String budgets = '/budgets';
 
@@ -130,6 +131,11 @@ class AppRouter {
         return _buildRoute(
           settings,
           const LoanListScreen(),
+        );
+      case AppRoutes.creditCards:
+        return _buildRoute(
+          settings,
+          const CreditCardListScreen(),
         );
       // Add these after creating screens
       /*

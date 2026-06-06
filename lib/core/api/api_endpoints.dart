@@ -60,6 +60,12 @@ class ApiEndpoints {
   static String deleteLoan(int id) => '/loans/$id';
   static String recordLoanPayment(int id) => '/loans/$id/record-payment';
 
+  // Cradit Card
+  static const String creditCards = '/credit-cards';
+  static const String storeCreditCard = '/credit-cards';
+  static String updateCreditCard(int id) => '/credit-cards/$id';
+  static String recordCreditCardPayment(int id) => '/credit-cards/$id/record-payment';
+
 
   // Savings Goal
   static const String savingsGoals = '/savings-goals';

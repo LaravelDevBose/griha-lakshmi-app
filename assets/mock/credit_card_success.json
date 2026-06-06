@@ -1,0 +1,67 @@
+{
+  "success": true,
+  "message": "Credit card list loaded successfully",
+  "status_code": 200,
+  "code": "CREDIT_CARD_LIST_LOADED",
+  "data": {
+    "summary": {
+      "total_cards": 3,
+      "total_limit": 450000,
+      "total_outstanding_balance": 128500,
+      "minimum_payment_total": 16400
+    },
+    "pagination": {
+      "current_page": 1,
+      "per_page": 10,
+      "total": 3,
+      "last_page": 1
+    },
+    "credit_cards": [
+      {
+        "id": 1,
+        "card_name": "DBBL Visa Gold",
+        "bank_name": "Dutch-Bangla Bank",
+        "last_four_digits": "4821",
+        "credit_limit": 200000,
+        "outstanding_balance": 68500,
+        "statement_day": 5,
+        "due_day": 20,
+        "minimum_payment": 8500,
+        "assigned_person": "Self",
+        "reminder_days_before": 2,
+        "reminder_time": "21:00",
+        "status": "active"
+      },
+      {
+        "id": 2,
+        "card_name": "City Bank Amex",
+        "bank_name": "City Bank",
+        "last_four_digits": "1198",
+        "credit_limit": 150000,
+        "outstanding_balance": 42000,
+        "statement_day": 8,
+        "due_day": 23,
+        "minimum_payment": 5500,
+        "assigned_person": "Father",
+        "reminder_days_before": 3,
+        "reminder_time": "20:00",
+        "status": "active"
+      },
+      {
+        "id": 3,
+        "card_name": "EBL Mastercard",
+        "bank_name": "Eastern Bank",
+        "last_four_digits": "7604",
+        "credit_limit": 100000,
+        "outstanding_balance": 18000,
+        "statement_day": 10,
+        "due_day": 25,
+        "minimum_payment": 2400,
+        "assigned_person": "Brother",
+        "reminder_days_before": 2,
+        "reminder_time": "19:30",
+        "status": "active"
+      }
+    ]
+  }
+}

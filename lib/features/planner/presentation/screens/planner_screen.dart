@@ -8,6 +8,7 @@ import '../../../../core/widgets/app_scaffold.dart';
 import '../../../purchase_planner/presentation/screens/purchase_planner_list_screen.dart';
 import '../../../bills/presentation/screens/bill_list_screen.dart';
 import '../../../loans/presentation/screens/loan_list_screen.dart';
+import '../../../credit_cards/presentation/screens/credit_card_list_screen.dart';
 
 class PlannerScreen extends StatelessWidget {
   const PlannerScreen({super.key});
@@ -103,10 +104,11 @@ class PlannerScreen extends StatelessWidget {
             icon: Icons.credit_card_rounded,
             color: AppColors.danger,
             onTap: () {
-              _openRouteOrComingSoon(
-                context: context,
-                title: 'Credit Cards',
-                routeName: AppRoutes.creditCards,
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const CreditCardListScreen(),
+                ),
               );
             },
           ),
