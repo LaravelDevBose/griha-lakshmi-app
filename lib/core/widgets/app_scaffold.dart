@@ -15,7 +15,9 @@ class AppScaffold extends StatelessWidget {
     this.bottomNavigationBar,
     this.floatingActionButton,
     this.showQuickActionFab = false,
-    this.onIncomeSaved,
+    this.onBillSaved,
+    this.onExpenseSaved,
+    this.onLoanSaved,
     this.showAppBar = true,
     this.showDrawer = false,
     this.showFooter = false,
@@ -39,12 +41,14 @@ class AppScaffold extends StatelessWidget {
   /// Keep false on Add/Edit pages.
   final bool showQuickActionFab;
 
-  /// Callback from QuickActionFab after income is saved.
+  /// Callback from QuickActionFab after a bill is saved.
   ///
   /// Example:
   /// Transactions page -> reload transactions.
   /// Dashboard page -> reload dashboard.
-  final VoidCallback? onIncomeSaved;
+  final VoidCallback? onBillSaved;
+  final VoidCallback? onExpenseSaved;
+  final VoidCallback? onLoanSaved;
 
   final bool showAppBar;
   final bool showDrawer;
@@ -87,7 +91,9 @@ class AppScaffold extends StatelessWidget {
       floatingActionButton: floatingActionButton ??
           (showQuickActionFab
               ? QuickActionFab(
-                  onIncomeSaved: onIncomeSaved,
+                  onBillSaved: onBillSaved,
+                  onExpenseSaved: onExpenseSaved,
+                  onLoanSaved: onLoanSaved,
                 )
               : null),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

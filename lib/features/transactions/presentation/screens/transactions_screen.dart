@@ -134,7 +134,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       showFooter: true,
       footerTab: AppFooterTab.transactions,
       showQuickActionFab: true,
-      onIncomeSaved: controller.getTransactions,
+      onExpenseSaved: controller.getTransactions,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       body: AnimatedBuilder(
         animation: controller,

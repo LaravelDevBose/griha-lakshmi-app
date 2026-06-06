@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../app/router.dart';
 import '../../../../app/theme.dart';
 import '../../../../core/widgets/app_footer_nav.dart';
 import '../../../../core/widgets/app_icon_box.dart';
@@ -10,27 +9,10 @@ import '../../../bills/presentation/screens/bill_list_screen.dart';
 import '../../../loans/presentation/screens/loan_list_screen.dart';
 import '../../../credit_cards/presentation/screens/credit_card_list_screen.dart';
 import '../../../savings_goals/presentation/screens/savings_goal_list_screen.dart';
+import '../../../budgets/presentation/screens/budget_screen.dart';
 
 class PlannerScreen extends StatelessWidget {
   const PlannerScreen({super.key});
-
-  void _openRouteOrComingSoon({
-    required BuildContext context,
-    required String title,
-    String? routeName,
-  }) {
-    if (routeName == null || routeName.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('$title coming soon'),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-      return;
-    }
-
-    Navigator.pushNamed(context, routeName);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,10 +117,11 @@ class PlannerScreen extends StatelessWidget {
             icon: Icons.pie_chart_rounded,
             color: AppColors.primary,
             onTap: () {
-              _openRouteOrComingSoon(
-                context: context,
-                title: 'Budgets',
-                routeName: AppRoutes.budgets,
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const BudgetScreen(),
+                ),
               );
             },
           ),

@@ -66,7 +66,6 @@ class ApiEndpoints {
   static String updateCreditCard(int id) => '/credit-cards/$id';
   static String recordCreditCardPayment(int id) => '/credit-cards/$id/record-payment';
 
-
   // Savings Goal
   static const String savingsGoals = '/savings-goals';
   static const String storeSavingsGoal = '/savings-goals';
@@ -74,6 +73,11 @@ class ApiEndpoints {
   static String updateSavingsGoal(int id) => '/savings-goals/$id';
   static String deleteSavingsGoal(int id) => '/savings-goals/$id';
   static String recordSavingsDeposit(int id) => '/savings-goals/$id/record-deposit';
+
+  // Budgets
+  static const String currentBudget = '/budgets/current';
+  static const String storeBudget = '/budgets';
+  static String updateBudget(int id) => '/budgets/$id';
 
   // Dashboard / Reports
   static const String dashboard = '/dashboard';

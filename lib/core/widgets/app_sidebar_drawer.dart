@@ -101,6 +101,11 @@ class AppSidebarDrawer extends StatelessWidget {
                         routeName: AppRoutes.savingsGoal,
                       ),
                       _DrawerItem(
+                        icon: Icons.pie_chart_rounded,
+                        title: 'Budgets',
+                        routeName: AppRoutes.budgets,
+                      ),
+                      _DrawerItem(
                         icon: Icons.bar_chart_rounded,
                         title: 'Reports',
                         routeName: AppRoutes.reports,
