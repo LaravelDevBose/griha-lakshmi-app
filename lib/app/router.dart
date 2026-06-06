@@ -16,8 +16,11 @@ import '../features/income/presentation/screens/income_list_screen.dart';
 import '../features/income/presentation/screens/add_edit_income_screen.dart';
 
 import '../features/planner/presentation/screens/planner_screen.dart';
+import '../../features/purchase_planner/presentation/screens/purchase_planner_list_screen.dart';
 
-// import '../features/bills/presentation/screens/bills_screen.dart';
+
+import '../features/bills/presentation/screens/bill_list_screen.dart';
+// import '../features/bills/presentation/screens/add_edit_bill_screen.dart';
 // import '../features/reports/presentation/screens/reports_screen.dart';
 // import '../features/profile/presentation/screens/profile_screen.dart';
 
@@ -51,6 +54,8 @@ class AppRoutes {
   static const String addPurchase = '/add-purchase';
   static const String addReminder = '/add-reminder';
   static const String bills = '/bills';
+  static const String addBill = '/add-bill';
+
   static const String reports = '/reports';
   static const String savingsGoal = '/savings-goal';
   static const String profile = '/profile';
@@ -112,18 +117,22 @@ class AppRouter {
           builder: (_) => const PlannerScreen(),
           settings: settings,
         );
+      case AppRoutes.bills:
+        return _buildRoute(
+          settings,
+          const BillListScreen(),
+        );
+      case AppRoutes.purchasePlanner:
+        return _buildRoute(
+          settings,
+          const PurchasePlannerListScreen(),
+        );
       // Add these after creating screens
       /*
       case AppRoutes.register:
         return _buildRoute(
           settings,
           const RegisterScreen(),
-        );
-
-      case AppRoutes.bills:
-        return _buildRoute(
-          settings,
-          const BillsScreen(),
         );
 
       case AppRoutes.reports:

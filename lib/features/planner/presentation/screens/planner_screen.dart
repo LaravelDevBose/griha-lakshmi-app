@@ -6,6 +6,7 @@ import '../../../../core/widgets/app_footer_nav.dart';
 import '../../../../core/widgets/app_icon_box.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../purchase_planner/presentation/screens/purchase_planner_list_screen.dart';
+import '../../../bills/presentation/screens/bill_list_screen.dart';
 
 class PlannerScreen extends StatelessWidget {
   const PlannerScreen({super.key});
@@ -71,10 +72,11 @@ class PlannerScreen extends StatelessWidget {
             icon: Icons.receipt_long_rounded,
             color: AppColors.info,
             onTap: () {
-              _openRouteOrComingSoon(
-                context: context,
-                title: 'Bills',
-                routeName: AppRoutes.bills,
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const BillListScreen(),
+                ),
               );
             },
           ),

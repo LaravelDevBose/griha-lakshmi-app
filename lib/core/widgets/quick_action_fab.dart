@@ -2,16 +2,25 @@ import 'package:flutter/material.dart';
 
 import '../../app/router.dart';
 import '../../app/theme.dart';
+import '../../features/expense/presentation/screens/add_edit_expense_screen.dart';
 import '../../features/income/presentation/screens/add_edit_income_screen.dart';
+import '../../features/bills/presentation/screens/add_edit_bill_screen.dart';
+import '../../features/purchase_planner/presentation/screens/add_edit_purchase_item_screen.dart';
 import 'app_icon_box.dart';
 
 class QuickActionFab extends StatefulWidget {
   const QuickActionFab({
     this.onIncomeSaved,
+    this.onBillSaved,
+    this.onExpenseSaved,
+    this.onPurchaseSaved,
     super.key,
   });
 
   final VoidCallback? onIncomeSaved;
+  final VoidCallback? onBillSaved;
+  final VoidCallback? onPurchaseSaved;
+  final VoidCallback? onExpenseSaved;
 
   @override
   State<QuickActionFab> createState() => _QuickActionFabState();
@@ -61,6 +70,9 @@ class _QuickActionFabState extends State<QuickActionFab>
       builder: (_) {
         return _QuickActionSheet(
           onIncomeSaved: widget.onIncomeSaved,
+          onBillSaved: widget.onBillSaved,
+          onExpenseSaved: widget.onExpenseSaved,
+          onPurchaseSaved: widget.onPurchaseSaved,
         );
       },
     );
@@ -120,9 +132,15 @@ class _QuickActionFabState extends State<QuickActionFab>
 class _QuickActionSheet extends StatelessWidget {
   const _QuickActionSheet({
     this.onIncomeSaved,
+    this.onBillSaved,
+    this.onExpenseSaved,
+    this.onPurchaseSaved,
   });
 
   final VoidCallback? onIncomeSaved;
+  final VoidCallback? onBillSaved;
+  final VoidCallback? onExpenseSaved;
+  final VoidCallback? onPurchaseSaved;
 
   @override
   Widget build(BuildContext context) {
@@ -209,19 +227,29 @@ class _QuickActionSheet extends StatelessWidget {
                 mainAxisSpacing: 12,
                 childAspectRatio: 1.55,
                 children: [
-                  const _QuickActionItem(
+                  _QuickActionItem(
                     title: 'Expense',
                     subtitle: 'Daily cost',
                     icon: Icons.receipt_long_rounded,
-                    routeName: AppRoutes.addExpense,
                     color: AppColors.danger,
+                    pageBuilder: (_) => const AddEditExpenseScreen(),
+                    onCompleted: onExpenseSaved,
                   ),
-                  const _QuickActionItem(
+                  _QuickActionItem(
+                    title: 'Bill',
+                    subtitle: 'Need to pay',
+                    icon: Icons.payments_rounded,
+                    color: AppColors.info,
+                    pageBuilder: (_) => const AddEditBillScreen(),
+                    onCompleted: onBillSaved,
+                  ),
+                  _QuickActionItem(
                     title: 'Purchase',
                     subtitle: 'Buy later',
                     icon: Icons.shopping_bag_rounded,
-                    routeName: AppRoutes.addPurchase,
                     color: AppColors.primary,
+                    pageBuilder: (_) => const AddEditPurchaseItemScreen(),
+                    onCompleted: onPurchaseSaved,
                   ),
                   const _QuickActionItem(
                     title: 'Reminder',
@@ -238,13 +266,7 @@ class _QuickActionSheet extends StatelessWidget {
                     pageBuilder: (_) => const AddEditIncomeScreen(),
                     onCompleted: onIncomeSaved,
                   ),
-                  const _QuickActionItem(
-                    title: 'Bill',
-                    subtitle: 'Need to pay',
-                    icon: Icons.payments_rounded,
-                    routeName: AppRoutes.bills,
-                    color: AppColors.info,
-                  ),
+                  
                   const _QuickActionItem(
                     title: 'Savings',
                     subtitle: 'Goal deposit',

@@ -55,7 +55,8 @@ class ApiEndpoints {
   static String billDetails(int id) => '/bills/$id';
   static String updateBill(int id) => '/bills/$id';
   static String deleteBill(int id) => '/bills/$id';
-  static String markBillAsPaid(int id) => '/bills/$id/mark-as-paid';
+  static String markBillPaid(int id) => '/bills/$id/mark-paid';
+  static String snoozeBillReminder(int id) => '/bills/$id/snooze';
 
   // Savings Goal
   static const String savingsGoals = '/savings-goals';

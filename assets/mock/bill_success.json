@@ -1,0 +1,119 @@
+{
+  "success": true,
+  "message": "Bill list loaded successfully",
+  "status_code": 200,
+  "code": "BILL_LIST_LOADED",
+  "data": {
+    "summary": {
+      "total_bills": 6,
+      "upcoming_bills": 3,
+      "paid_bills": 2,
+      "overdue_bills": 1,
+      "expected_total": 23630
+    },
+    "pagination": {
+      "current_page": 1,
+      "per_page": 10,
+      "total": 6,
+      "last_page": 1
+    },
+    "bills": [
+      {
+        "id": 1,
+        "bill_name": "Electricity Bill",
+        "bill_type": "Utility",
+        "expected_amount": 3200,
+        "paid_amount": null,
+        "payment_account": null,
+        "due_date": "2026-06-16",
+        "repeat_frequency": "Monthly",
+        "assigned_person": "Father",
+        "reminder_days_before": 1,
+        "reminder_time": "20:00",
+        "status": "upcoming",
+        "has_reminder": true,
+        "notes": "Pay before due date to avoid late fee."
+      },
+      {
+        "id": 2,
+        "bill_name": "Internet Bill",
+        "bill_type": "Utility",
+        "expected_amount": 1200,
+        "paid_amount": 1200,
+        "payment_account": "bKash",
+        "due_date": "2026-06-12",
+        "repeat_frequency": "Monthly",
+        "assigned_person": "Brother",
+        "reminder_days_before": 1,
+        "reminder_time": "19:00",
+        "status": "paid",
+        "has_reminder": false,
+        "notes": null
+      },
+      {
+        "id": 3,
+        "bill_name": "Gas Bill",
+        "bill_type": "Utility",
+        "expected_amount": 980,
+        "paid_amount": null,
+        "payment_account": null,
+        "due_date": "2026-06-10",
+        "repeat_frequency": "Monthly",
+        "assigned_person": "Mother",
+        "reminder_days_before": 2,
+        "reminder_time": "18:30",
+        "status": "overdue",
+        "has_reminder": true,
+        "notes": "Check previous month adjustment."
+      },
+      {
+        "id": 4,
+        "bill_name": "House Rent",
+        "bill_type": "Rent",
+        "expected_amount": 15000,
+        "paid_amount": null,
+        "payment_account": null,
+        "due_date": "2026-06-25",
+        "repeat_frequency": "Monthly",
+        "assigned_person": "Father",
+        "reminder_days_before": 2,
+        "reminder_time": "10:00",
+        "status": "upcoming",
+        "has_reminder": true,
+        "notes": null
+      },
+      {
+        "id": 5,
+        "bill_name": "Water Bill",
+        "bill_type": "Utility",
+        "expected_amount": 650,
+        "paid_amount": 650,
+        "payment_account": "Cash",
+        "due_date": "2026-06-08",
+        "repeat_frequency": "Monthly",
+        "assigned_person": "Self",
+        "reminder_days_before": 1,
+        "reminder_time": "17:00",
+        "status": "paid",
+        "has_reminder": false,
+        "notes": null
+      },
+      {
+        "id": 6,
+        "bill_name": "Credit Card Minimum Due",
+        "bill_type": "Credit Card",
+        "expected_amount": 2600,
+        "paid_amount": null,
+        "payment_account": null,
+        "due_date": "2026-06-18",
+        "repeat_frequency": "Monthly",
+        "assigned_person": "Self",
+        "reminder_days_before": 1,
+        "reminder_time": "21:00",
+        "status": "upcoming",
+        "has_reminder": true,
+        "notes": "Pay full if possible."
+      }
+    ]
+  }
+}
