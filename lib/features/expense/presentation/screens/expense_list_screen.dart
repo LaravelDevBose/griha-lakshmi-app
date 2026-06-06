@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/api/api.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_scaffold.dart';
+import '../../../../core/widgets/widgets.dart';
 import '../../data/datasources/expense_remote_datasource.dart';
 import '../../data/models/expense_model.dart';
 import '../../data/repositories/expense_repository.dart';
@@ -543,89 +542,112 @@ class _ExpenseDetailsBottomSheet extends StatelessWidget {
           right: 18,
           bottom: MediaQuery.of(context).viewInsets.bottom + 18,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                color: expenseColor.withValues(alpha: 0.10),
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(
-                  color: expenseColor.withValues(alpha: 0.14),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  color: expenseColor.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: expenseColor.withValues(alpha: 0.14),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      height: 52,
+                      width: 52,
+                      decoration: BoxDecoration(
+                        color: expenseColor.withValues(alpha: 0.14),
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: const Icon(
+                        Icons.arrow_upward_rounded,
+                        color: expenseColor,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      expense.title,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '-${formatAmount(expense.amount)}',
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        color: expenseColor,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: Column(
+              const SizedBox(height: 14),
+              _DetailRow(label: 'Category', value: expense.category),
+              _DetailRow(label: 'Paid By', value: expense.paidBy),
+              _DetailRow(
+                label: 'Payment Account',
+                value: expense.paymentAccount,
+              ),
+              _DetailRow(label: 'Date', value: formatDate(expense.date)),
+              if (expense.receiptImages.isNotEmpty) ...[
+                const SizedBox(height: 10),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Receipt Images',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.52),
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                AppImagePreviewList(
+                  imagePaths: expense.receiptImages,
+                  height: 86,
+                  imageSize: 86,
+                  canRemove: false,
+                  emptyText: '',
+                ),
+              ],
+              if (expense.notes != null && expense.notes!.trim().isNotEmpty)
+                _DetailRow(label: 'Notes', value: expense.notes!),
+              const SizedBox(height: 14),
+              Row(
                 children: [
-                  Container(
-                    height: 52,
-                    width: 52,
-                    decoration: BoxDecoration(
-                      color: expenseColor.withValues(alpha: 0.14),
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: const Icon(
-                      Icons.arrow_upward_rounded,
-                      color: expenseColor,
+                  Expanded(
+                    child: AppButton(
+                      text: 'Edit',
+                      icon: Icons.edit_rounded,
+                      type: AppButtonType.outline,
+                      height: 48,
+                      borderRadius: 14,
+                      onPressed: onEdit,
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  Text(
-                    expense.title,
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '-${formatAmount(expense.amount)}',
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      color: expenseColor,
-                      fontWeight: FontWeight.w900,
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: AppButton(
+                      text: 'Delete',
+                      icon: Icons.delete_rounded,
+                      type: AppButtonType.danger,
+                      height: 48,
+                      borderRadius: 14,
+                      onPressed: onDelete,
                     ),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 14),
-            _DetailRow(label: 'Category', value: expense.category),
-            _DetailRow(label: 'Paid By', value: expense.paidBy),
-            _DetailRow(label: 'Payment Account', value: expense.paymentAccount),
-            _DetailRow(label: 'Date', value: formatDate(expense.date)),
-            if (expense.receiptImage != null &&
-                expense.receiptImage!.trim().isNotEmpty)
-              _DetailRow(label: 'Receipt', value: expense.receiptImage!),
-            if (expense.notes != null && expense.notes!.trim().isNotEmpty)
-              _DetailRow(label: 'Notes', value: expense.notes!),
-            const SizedBox(height: 14),
-            Row(
-              children: [
-                Expanded(
-                  child: AppButton(
-                    text: 'Edit',
-                    icon: Icons.edit_rounded,
-                    type: AppButtonType.outline,
-                    height: 48,
-                    borderRadius: 14,
-                    onPressed: onEdit,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: AppButton(
-                    text: 'Delete',
-                    icon: Icons.delete_rounded,
-                    type: AppButtonType.danger,
-                    height: 48,
-                    borderRadius: 14,
-                    onPressed: onDelete,
-                  ),
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -22,7 +22,7 @@
         "paid_by": "Mother",
         "payment_account": "Cash",
         "date": "2026-06-03",
-        "receipt_image": null,
+        "receipt_images": [],
         "notes": "Monthly grocery"
       },
       {
@@ -33,7 +33,7 @@
         "paid_by": "Father",
         "payment_account": "bKash",
         "date": "2026-06-05",
-        "receipt_image": null,
+        "receipt_images": [],
         "notes": null
       },
       {
@@ -44,7 +44,7 @@
         "paid_by": "Mother",
         "payment_account": "Nagad",
         "date": "2026-06-11",
-        "receipt_image": null,
+        "receipt_images": [],
         "notes": null
       },
       {
@@ -55,7 +55,7 @@
         "paid_by": "Brother",
         "payment_account": "bKash",
         "date": "2026-06-12",
-        "receipt_image": null,
+        "receipt_images": [],
         "notes": null
       },
       {
@@ -66,7 +66,7 @@
         "paid_by": "Mother",
         "payment_account": "Cash",
         "date": "2026-06-14",
-        "receipt_image": null,
+        "receipt_images": [],
         "notes": null
       }
     ]

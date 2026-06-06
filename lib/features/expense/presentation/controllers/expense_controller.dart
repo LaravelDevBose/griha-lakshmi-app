@@ -149,7 +149,7 @@ class ExpenseController extends ChangeNotifier {
     required String paidBy,
     required String paymentAccount,
     required DateTime date,
-    String? receiptImage,
+    required List<String> receiptImages,
     String? notes,
   }) async {
     isSubmitting = true;
@@ -167,7 +167,7 @@ class ExpenseController extends ChangeNotifier {
           'paid_by': paidBy,
           'payment_account': paymentAccount,
           'date': date.toIso8601String(),
-          'receipt_image': receiptImage,
+          'receipt_images': receiptImages,
           'notes': notes,
         },
       );
@@ -203,7 +203,7 @@ class ExpenseController extends ChangeNotifier {
     required String paidBy,
     required String paymentAccount,
     required DateTime date,
-    String? receiptImage,
+    required List<String> receiptImages,
     String? notes,
   }) async {
     isSubmitting = true;
@@ -224,7 +224,7 @@ class ExpenseController extends ChangeNotifier {
           'paid_by': paidBy,
           'payment_account': paymentAccount,
           'date': date.toIso8601String(),
-          'receipt_image': receiptImage,
+          'receipt_images': receiptImages,
           'notes': notes,
         },
       );

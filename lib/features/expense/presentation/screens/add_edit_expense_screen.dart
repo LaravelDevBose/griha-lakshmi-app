@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/api/api.dart';
 import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_image_preview_list.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../data/datasources/expense_remote_datasource.dart';
 import '../../data/models/expense_model.dart';
@@ -26,19 +28,21 @@ class AddEditExpenseScreen extends StatefulWidget {
 
 class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final ImagePicker imagePicker = ImagePicker();
 
   late final ExpenseController controller;
   late final bool shouldDisposeController;
 
   late final TextEditingController amountController;
   late final TextEditingController titleController;
-  late final TextEditingController receiptController;
   late final TextEditingController notesController;
 
   late String selectedCategory;
   late String selectedPaidBy;
   late String selectedPaymentAccount;
   late DateTime selectedDate;
+
+  List<String> receiptImages = [];
 
   @override
   void initState() {
@@ -68,10 +72,6 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
       text: expense?.title ?? '',
     );
 
-    receiptController = TextEditingController(
-      text: expense?.receiptImage ?? '',
-    );
-
     notesController = TextEditingController(
       text: expense?.notes ?? '',
     );
@@ -92,13 +92,13 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
     );
 
     selectedDate = expense?.date ?? DateTime.now();
+    receiptImages = [...expense?.receiptImages ?? []];
   }
 
   @override
   void dispose() {
     amountController.dispose();
     titleController.dispose();
-    receiptController.dispose();
     notesController.dispose();
 
     if (shouldDisposeController) {
@@ -159,14 +159,84 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
     });
   }
 
+  Future<void> _pickFromGallery() async {
+    final List<XFile> files = await imagePicker.pickMultiImage(
+      imageQuality: 82,
+    );
+
+    if (files.isEmpty) return;
+
+    setState(() {
+      receiptImages = [
+        ...receiptImages,
+        ...files.map((XFile file) => file.path),
+      ];
+    });
+  }
+
+  Future<void> _captureFromCamera() async {
+    final XFile? file = await imagePicker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 82,
+    );
+
+    if (file == null) return;
+
+    setState(() {
+      receiptImages = [
+        ...receiptImages,
+        file.path,
+      ];
+    });
+  }
+
+  void _removeReceiptImage(int index) {
+    setState(() {
+      receiptImages.removeAt(index);
+    });
+  }
+
+  void _showImageSourceSheet() {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (BuildContext sheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(18, 4, 18, 18),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppButton(
+                  text: 'Choose from Gallery',
+                  icon: Icons.photo_library_rounded,
+                  onPressed: () {
+                    Navigator.pop(sheetContext);
+                    _pickFromGallery();
+                  },
+                ),
+                const SizedBox(height: 10),
+                AppButton(
+                  text: 'Capture from Camera',
+                  icon: Icons.camera_alt_rounded,
+                  type: AppButtonType.outline,
+                  onPressed: () {
+                    Navigator.pop(sheetContext);
+                    _captureFromCamera();
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _submit() async {
     if (!formKey.currentState!.validate()) return;
 
     final double amount = double.tryParse(amountController.text.trim()) ?? 0;
-
-    final String? receiptImage = receiptController.text.trim().isEmpty
-        ? null
-        : receiptController.text.trim();
 
     final String? notes = notesController.text.trim().isEmpty
         ? null
@@ -183,7 +253,7 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
         paidBy: selectedPaidBy,
         paymentAccount: selectedPaymentAccount,
         date: selectedDate,
-        receiptImage: receiptImage,
+        receiptImages: receiptImages,
         notes: notes,
       );
     } else {
@@ -194,7 +264,7 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
         paidBy: selectedPaidBy,
         paymentAccount: selectedPaymentAccount,
         date: selectedDate,
-        receiptImage: receiptImage,
+        receiptImages: receiptImages,
         notes: notes,
       );
     }
@@ -346,14 +416,10 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                TextFormField(
-                  controller: receiptController,
-                  textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(
-                    labelText: 'Receipt Image Optional',
-                    hintText: 'Image path or uploaded receipt URL',
-                    border: OutlineInputBorder(),
-                  ),
+                _ReceiptImageSection(
+                  receiptImages: receiptImages,
+                  onAddImage: _showImageSourceSheet,
+                  onRemoveImage: _removeReceiptImage,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -444,6 +510,61 @@ class _HeaderCard extends StatelessWidget {
                 fontWeight: FontWeight.w900,
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ReceiptImageSection extends StatelessWidget {
+  const _ReceiptImageSection({
+    required this.receiptImages,
+    required this.onAddImage,
+    required this.onRemoveImage,
+  });
+
+  final List<String> receiptImages;
+  final VoidCallback onAddImage;
+  final ValueChanged<int> onRemoveImage;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: 0.35),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  'Receipt Images Optional',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              TextButton.icon(
+                onPressed: onAddImage,
+                icon: const Icon(Icons.add_photo_alternate_rounded),
+                label: const Text('Add'),
+              ),
+            ],
+          ),
+          AppImagePreviewList(
+            imagePaths: receiptImages,
+            canRemove: true,
+            onRemove: onRemoveImage,
+            emptyText: 'No receipt image added yet.',
           ),
         ],
       ),

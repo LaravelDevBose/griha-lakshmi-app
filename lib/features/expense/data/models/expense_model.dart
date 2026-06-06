@@ -7,7 +7,7 @@ class ExpenseModel {
     required this.paidBy,
     required this.paymentAccount,
     required this.date,
-    this.receiptImage,
+    this.receiptImages = const [],
     this.notes,
   });
 
@@ -18,7 +18,7 @@ class ExpenseModel {
   final String paidBy;
   final String paymentAccount;
   final DateTime date;
-  final String? receiptImage;
+  final List<String> receiptImages;
   final String? notes;
 
   factory ExpenseModel.fromJson(Map<String, dynamic> json) {
@@ -30,7 +30,7 @@ class ExpenseModel {
       paidBy: json['paid_by']?.toString() ?? '',
       paymentAccount: json['payment_account']?.toString() ?? '',
       date: DateTime.tryParse(json['date'].toString()) ?? DateTime.now(),
-      receiptImage: json['receipt_image']?.toString(),
+      receiptImages: _receiptImagesFromJson(json),
       notes: json['notes']?.toString(),
     );
   }
@@ -43,7 +43,7 @@ class ExpenseModel {
       'paid_by': paidBy,
       'payment_account': paymentAccount,
       'date': date.toIso8601String(),
-      'receipt_image': receiptImage,
+      'receipt_images': receiptImages,
       'notes': notes,
     };
   }
@@ -56,7 +56,7 @@ class ExpenseModel {
     String? paidBy,
     String? paymentAccount,
     DateTime? date,
-    String? receiptImage,
+    List<String>? receiptImages,
     String? notes,
   }) {
     return ExpenseModel(
@@ -67,8 +67,28 @@ class ExpenseModel {
       paidBy: paidBy ?? this.paidBy,
       paymentAccount: paymentAccount ?? this.paymentAccount,
       date: date ?? this.date,
-      receiptImage: receiptImage ?? this.receiptImage,
+      receiptImages: receiptImages ?? this.receiptImages,
       notes: notes ?? this.notes,
     );
+  }
+
+  static List<String> _receiptImagesFromJson(Map<String, dynamic> json) {
+    final dynamic receiptImages = json['receipt_images'];
+
+    if (receiptImages is List) {
+      return receiptImages
+          .map((dynamic item) => item.toString())
+          .where((String item) => item.trim().isNotEmpty)
+          .toList();
+    }
+
+    final dynamic oldReceiptImage = json['receipt_image'];
+
+    if (oldReceiptImage != null &&
+        oldReceiptImage.toString().trim().isNotEmpty) {
+      return [oldReceiptImage.toString()];
+    }
+
+    return [];
   }
 }
