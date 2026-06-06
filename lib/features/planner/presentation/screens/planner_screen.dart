@@ -9,6 +9,7 @@ import '../../../purchase_planner/presentation/screens/purchase_planner_list_scr
 import '../../../bills/presentation/screens/bill_list_screen.dart';
 import '../../../loans/presentation/screens/loan_list_screen.dart';
 import '../../../credit_cards/presentation/screens/credit_card_list_screen.dart';
+import '../../../savings_goals/presentation/screens/savings_goal_list_screen.dart';
 
 class PlannerScreen extends StatelessWidget {
   const PlannerScreen({super.key});
@@ -119,10 +120,11 @@ class PlannerScreen extends StatelessWidget {
             icon: Icons.savings_rounded,
             color: AppColors.success,
             onTap: () {
-              _openRouteOrComingSoon(
-                context: context,
-                title: 'Savings Goals',
-                routeName: AppRoutes.savingsGoal,
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const SavingsGoalListScreen(),
+                ),
               );
             },
           ),

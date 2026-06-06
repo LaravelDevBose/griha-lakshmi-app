@@ -69,10 +69,11 @@ class ApiEndpoints {
 
   // Savings Goal
   static const String savingsGoals = '/savings-goals';
-  static const String createSavingsGoal = '/savings-goals';
+  static const String storeSavingsGoal = '/savings-goals';
   static String savingsGoalDetails(int id) => '/savings-goals/$id';
   static String updateSavingsGoal(int id) => '/savings-goals/$id';
   static String deleteSavingsGoal(int id) => '/savings-goals/$id';
+  static String recordSavingsDeposit(int id) => '/savings-goals/$id/record-deposit';
 
   // Dashboard / Reports
   static const String dashboard = '/dashboard';

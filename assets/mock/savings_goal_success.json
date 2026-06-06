@@ -1,0 +1,84 @@
+{
+  "success": true,
+  "message": "Savings goal list loaded successfully",
+  "status_code": 200,
+  "code": "SAVINGS_GOAL_LIST_LOADED",
+  "data": {
+    "summary": {
+      "total_goals": 4,
+      "active_goals": 3,
+      "completed_goals": 1,
+      "target_total": 850000,
+      "current_total": 315000,
+      "monthly_target_total": 42000
+    },
+    "pagination": {
+      "current_page": 1,
+      "per_page": 10,
+      "total": 4,
+      "last_page": 1
+    },
+    "savings_goals": [
+      {
+        "id": 1,
+        "goal_name": "Emergency Fund",
+        "goal_type": "Emergency",
+        "target_amount": 300000,
+        "current_amount": 125000,
+        "monthly_deposit_target": 15000,
+        "deposit_due_day": 5,
+        "target_date": "2027-01-05",
+        "assigned_person": "Self",
+        "reminder_days_before": 1,
+        "reminder_time": "20:00",
+        "status": "active",
+        "notes": "Keep this money separate from regular expenses."
+      },
+      {
+        "id": 2,
+        "goal_name": "Family Trip",
+        "goal_type": "Travel",
+        "target_amount": 180000,
+        "current_amount": 65000,
+        "monthly_deposit_target": 12000,
+        "deposit_due_day": 10,
+        "target_date": "2026-12-10",
+        "assigned_person": "Father",
+        "reminder_days_before": 2,
+        "reminder_time": "19:30",
+        "status": "active",
+        "notes": "Plan Cox's Bazar or Sylhet family trip."
+      },
+      {
+        "id": 3,
+        "goal_name": "New Laptop",
+        "goal_type": "Electronics",
+        "target_amount": 120000,
+        "current_amount": 120000,
+        "monthly_deposit_target": 10000,
+        "deposit_due_day": 15,
+        "target_date": "2026-06-15",
+        "assigned_person": "Self",
+        "reminder_days_before": 1,
+        "reminder_time": "21:00",
+        "status": "completed",
+        "notes": null
+      },
+      {
+        "id": 4,
+        "goal_name": "Home Furniture",
+        "goal_type": "Home",
+        "target_amount": 250000,
+        "current_amount": 5000,
+        "monthly_deposit_target": 5000,
+        "deposit_due_day": 20,
+        "target_date": "2028-01-20",
+        "assigned_person": "Mother",
+        "reminder_days_before": 2,
+        "reminder_time": "18:00",
+        "status": "active",
+        "notes": null
+      }
+    ]
+  }
+}

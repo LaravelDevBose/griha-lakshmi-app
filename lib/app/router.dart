@@ -20,6 +20,7 @@ import '../../features/purchase_planner/presentation/screens/purchase_planner_li
 import '../features/bills/presentation/screens/bill_list_screen.dart';
 import '../features/loans/presentation/screens/loan_list_screen.dart';
 import '../features/credit_cards/presentation/screens/credit_card_list_screen.dart';
+import '../features/savings_goals/presentation/screens/savings_goal_list_screen.dart';
 // import '../features/reports/presentation/screens/reports_screen.dart';
 // import '../features/profile/presentation/screens/profile_screen.dart';
 
@@ -136,6 +137,11 @@ class AppRouter {
         return _buildRoute(
           settings,
           const CreditCardListScreen(),
+        );
+      case AppRoutes.savingsGoal:
+        return _buildRoute(
+          settings,
+          const SavingsGoalListScreen(),
         );
       // Add these after creating screens
       /*
