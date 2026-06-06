@@ -5,6 +5,7 @@ import '../../../../app/theme.dart';
 import '../../../../core/widgets/app_footer_nav.dart';
 import '../../../../core/widgets/app_icon_box.dart';
 import '../../../../core/widgets/app_scaffold.dart';
+import '../../../purchase_planner/presentation/screens/purchase_planner_list_screen.dart';
 
 class PlannerScreen extends StatelessWidget {
   const PlannerScreen({super.key});
@@ -55,10 +56,11 @@ class PlannerScreen extends StatelessWidget {
             icon: Icons.shopping_bag_rounded,
             color: AppColors.primary,
             onTap: () {
-              _openRouteOrComingSoon(
-                context: context,
-                title: 'Purchase Planner',
-                routeName: AppRoutes.purchasePlanner,
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const PurchasePlannerListScreen(),
+                ),
               );
             },
           ),

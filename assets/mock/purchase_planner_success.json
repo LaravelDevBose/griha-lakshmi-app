@@ -1,0 +1,97 @@
+{
+  "success": true,
+  "message": "Purchase planner items loaded successfully",
+  "status_code": 200,
+  "code": "PURCHASE_PLANNER_LIST_LOADED",
+  "data": {
+    "summary": {
+      "total_items": 8,
+      "urgent_items": 2,
+      "completed_items": 2,
+      "estimated_total": 186500
+    },
+    "pagination": {
+      "current_page": 1,
+      "per_page": 10,
+      "total": 8,
+      "last_page": 1
+    },
+    "items": [
+      {
+        "id": 1,
+        "product_name": "New Refrigerator",
+        "estimated_price": 68000,
+        "final_price": null,
+        "category": "Home Appliance",
+        "priority": "Urgent",
+        "assigned_to": "Father",
+        "needed_by_date": "2026-06-25",
+        "reminder_date_time": "2026-06-22T10:00:00",
+        "status": "assigned",
+        "notes": "Need before Eid family gathering.",
+        "product_image": null,
+        "purchase_link": "https://example.com/refrigerator"
+      },
+      {
+        "id": 2,
+        "product_name": "School Bag",
+        "estimated_price": 2200,
+        "final_price": null,
+        "category": "Education",
+        "priority": "Medium",
+        "assigned_to": "Mother",
+        "needed_by_date": "2026-06-20",
+        "reminder_date_time": "2026-06-18T18:30:00",
+        "status": "pending",
+        "notes": null,
+        "product_image": null,
+        "purchase_link": null
+      },
+      {
+        "id": 3,
+        "product_name": "Medicine Organizer Box",
+        "estimated_price": 850,
+        "final_price": 780,
+        "category": "Health",
+        "priority": "Low",
+        "assigned_to": "Self",
+        "needed_by_date": "2026-06-14",
+        "reminder_date_time": "2026-06-13T09:00:00",
+        "status": "completed",
+        "notes": "Purchased from local pharmacy.",
+        "product_image": null,
+        "purchase_link": null
+      },
+      {
+        "id": 4,
+        "product_name": "Microwave Oven",
+        "estimated_price": 18500,
+        "final_price": null,
+        "category": "Home Appliance",
+        "priority": "High",
+        "assigned_to": "Brother",
+        "needed_by_date": "2026-07-01",
+        "reminder_date_time": "2026-06-28T11:00:00",
+        "status": "assigned",
+        "notes": "Compare Walton and Samsung.",
+        "product_image": null,
+        "purchase_link": null
+      },
+      {
+        "id": 5,
+        "product_name": "Monthly Grocery Bulk",
+        "estimated_price": 9500,
+        "final_price": null,
+        "category": "Grocery",
+        "priority": "Urgent",
+        "assigned_to": "Mother",
+        "needed_by_date": "2026-06-12",
+        "reminder_date_time": "2026-06-10T17:00:00",
+        "status": "pending",
+        "notes": "Rice, oil, lentils, spices.",
+        "product_image": null,
+        "purchase_link": null
+      }
+    ]
+  }
+}

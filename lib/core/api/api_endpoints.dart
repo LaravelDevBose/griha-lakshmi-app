@@ -34,6 +34,21 @@ class ApiEndpoints {
   static String updateExpense(int id) => '/expenses/$id';
   static String deleteExpense(int id) => '/expenses/$id';
 
+
+  // Purchase Planner
+  static const String purchasePlannerItems = '/purchase-planner/items';
+  static const String storePurchasePlannerItem = '/purchase-planner/items';
+
+  static String updatePurchasePlannerItem(int id) => '/purchase-planner/items/$id';
+
+  static String deletePurchasePlannerItem(int id) => '/purchase-planner/items/$id';
+
+  static String assignPurchasePlannerItem(int id) => '/purchase-planner/items/$id/assign';
+
+  static String markPurchasePlannerItemPurchased(int id) => '/purchase-planner/items/$id/mark-purchased';
+
+  static String cancelPurchasePlannerItem(int id) => '/purchase-planner/items/$id/cancel';
+
   // Bills
   static const String bills = '/bills';
   static const String storeBill = '/bills';
