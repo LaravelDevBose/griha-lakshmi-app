@@ -22,6 +22,9 @@ import '../features/loans/presentation/screens/loan_list_screen.dart';
 import '../features/credit_cards/presentation/screens/credit_card_list_screen.dart';
 import '../features/savings_goals/presentation/screens/savings_goal_list_screen.dart';
 import '../features/budgets/presentation/screens/budget_screen.dart';
+
+import '../features/reminders/presentation/screens/reminder_list_screen.dart';
+
 // import '../features/reports/presentation/screens/reports_screen.dart';
 // import '../features/profile/presentation/screens/profile_screen.dart';
 
@@ -50,13 +53,11 @@ class AppRoutes {
   static const String loans = '/loans';
   static const String creditCards = '/credit-cards';
   static const String addCreditCard = '/add-credit-card';
-
   static const String budgets = '/budgets';
+    static const String bills = '/bills';
 
-  static const String addPurchase = '/add-purchase';
-  static const String addReminder = '/add-reminder';
-  static const String bills = '/bills';
-  static const String addBill = '/add-bill';
+  static const String reminders = '/reminders';
+
 
   static const String reports = '/reports';
   static const String savingsGoal = '/savings-goal';
@@ -148,6 +149,11 @@ class AppRouter {
         return _buildRoute(
           settings,
           const BudgetScreen(),
+        );
+      case AppRoutes.reminders:
+        return _buildRoute(
+          settings,
+          const ReminderListScreen(),
         );
       // Add these after creating screens
       /*

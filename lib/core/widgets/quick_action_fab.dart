@@ -5,6 +5,7 @@ import '../../app/theme.dart';
 import '../../features/expense/presentation/screens/add_edit_expense_screen.dart';
 import '../../features/bills/presentation/screens/add_edit_bill_screen.dart';
 import '../../features/loans/presentation/screens/add_edit_loan_screen.dart';
+import '../../features/reminders/presentation/screens/add_edit_reminder_screen.dart';
 import 'app_icon_box.dart';
 
 class QuickActionFab extends StatefulWidget {
@@ -12,12 +13,14 @@ class QuickActionFab extends StatefulWidget {
     this.onBillSaved,
     this.onExpenseSaved,
     this.onLoanSaved,
+    this.onReminderSaved,
     super.key,
   });
 
   final VoidCallback? onBillSaved;
   final VoidCallback? onExpenseSaved;
   final VoidCallback? onLoanSaved;
+  final VoidCallback? onReminderSaved;
   
   @override
   State<QuickActionFab> createState() => _QuickActionFabState();
@@ -69,6 +72,7 @@ class _QuickActionFabState extends State<QuickActionFab>
           onBillSaved: widget.onBillSaved,
           onExpenseSaved: widget.onExpenseSaved,
           onLoanSaved: widget.onLoanSaved,
+          onReminderSaved: widget.onReminderSaved,
         );
       },
     );
@@ -130,11 +134,13 @@ class _QuickActionSheet extends StatelessWidget {
     this.onBillSaved,
     this.onExpenseSaved,
     this.onLoanSaved,
+    this.onReminderSaved,
   });
 
   final VoidCallback? onBillSaved;
   final VoidCallback? onExpenseSaved;
   final VoidCallback? onLoanSaved;
+  final VoidCallback? onReminderSaved;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -228,12 +234,13 @@ class _QuickActionSheet extends StatelessWidget {
                     pageBuilder: (_) => const AddEditExpenseScreen(),
                     onCompleted: onExpenseSaved,
                   ),
-                  const _QuickActionItem(
+                  _QuickActionItem(
                     title: 'Reminder',
                     subtitle: 'Upcoming task',
                     icon: Icons.notifications_active_rounded,
-                    routeName: AppRoutes.addReminder,
                     color: AppColors.warning,
+                    pageBuilder: (_) => const AddEditReminderScreen(),
+                    onCompleted: onReminderSaved,
                   ),
                   _QuickActionItem(
                     title: 'Bill',

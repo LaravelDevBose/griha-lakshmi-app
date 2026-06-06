@@ -71,6 +71,11 @@ class AppSidebarDrawer extends StatelessWidget {
                         routeName: AppRoutes.expense,
                       ),
                       _DrawerItem(
+                        icon: Icons.event_note_rounded,
+                        title: 'Reminders',
+                        routeName: AppRoutes.reminders,
+                      ),
+                      _DrawerItem(
                         icon: Icons.add_card_rounded,
                         title: 'Incomes',
                         routeName: AppRoutes.incomes,

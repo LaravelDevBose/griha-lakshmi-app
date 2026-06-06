@@ -34,7 +34,6 @@ class ApiEndpoints {
   static String updateExpense(int id) => '/expenses/$id';
   static String deleteExpense(int id) => '/expenses/$id';
 
-
   // Purchase Planner
   static const String purchasePlannerItems = '/purchase-planner/items';
   static const String storePurchasePlannerItem = '/purchase-planner/items';
@@ -78,6 +77,14 @@ class ApiEndpoints {
   static const String currentBudget = '/budgets/current';
   static const String storeBudget = '/budgets';
   static String updateBudget(int id) => '/budgets/$id';
+
+  // Reminders
+  static const String reminders = '/reminders';
+  static const String storeReminder = '/reminders';
+  static String updateReminder(int id) => '/reminders/$id';
+  static String deleteReminder(int id) => '/reminders/$id';
+  static String completeReminder(int id) => '/reminders/$id/complete';
+  static String snoozeReminder(int id) => '/reminders/$id/snooze';
 
   // Dashboard / Reports
   static const String dashboard = '/dashboard';
