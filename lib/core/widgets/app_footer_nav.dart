@@ -6,8 +6,9 @@ import '../../app/theme.dart';
 enum AppFooterTab {
   home,
   transactions,
-  report,
-  profile,
+  planner,
+  reports,
+  more,
 }
 
 class AppFooterNav extends StatelessWidget {
@@ -53,16 +54,22 @@ class AppFooterNav extends StatelessWidget {
                 routeName: AppRoutes.transactions,
               ),
               _FooterNavItem(
+                icon: Icons.event_note_rounded,
+                tab: AppFooterTab.planner,
+                currentTab: currentTab,
+                routeName: AppRoutes.planner,
+              ),
+              _FooterNavItem(
                 icon: Icons.bar_chart_rounded,
-                tab: AppFooterTab.report,
+                tab: AppFooterTab.reports,
                 currentTab: currentTab,
                 routeName: AppRoutes.reports,
               ),
               _FooterNavItem(
-                icon: Icons.person_rounded,
-                tab: AppFooterTab.profile,
+                icon: Icons.more_horiz_rounded,
+                tab: AppFooterTab.more,
                 currentTab: currentTab,
-                routeName: AppRoutes.profile,
+                routeName: AppRoutes.more,
               ),
             ],
           ),
