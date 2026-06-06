@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/api/api.dart';
+import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_scaffold.dart';
 import '../../data/datasources/income_remote_datasource.dart';
 import '../../data/models/income_model.dart';
 import '../../data/repositories/income_repository.dart';
@@ -212,29 +214,31 @@ class _AddEditIncomeScreenState extends State<AddEditIncomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
     const Color incomeColor = Colors.green;
 
-    return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
-      appBar: AppBar(
-        title: Text(widget.isEdit ? 'Edit Income' : 'Add Income'),
-        centerTitle: false,
-      ),
+    return AppScaffold(
+      title: widget.isEdit ? 'Edit Income' : 'Add Income',
+      showDrawer: false,
+      showFooter: false,
+      showQuickActionFab: false,
+      useCustomHeader: false,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       body: AnimatedBuilder(
         animation: controller,
         builder: (BuildContext context, Widget? child) {
           return Form(
             key: formKey,
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+              padding: const EdgeInsets.only(
+                top: 12,
+                bottom: 24,
+              ),
               children: [
                 _HeaderCard(
                   isEdit: widget.isEdit,
                   incomeColor: incomeColor,
                 ),
                 const SizedBox(height: 18),
-
                 TextFormField(
                   controller: amountController,
                   keyboardType: TextInputType.number,
@@ -254,9 +258,7 @@ class _AddEditIncomeScreenState extends State<AddEditIncomeScreen> {
                     return null;
                   },
                 ),
-
                 const SizedBox(height: 12),
-
                 TextFormField(
                   controller: titleController,
                   textInputAction: TextInputAction.next,
@@ -272,9 +274,7 @@ class _AddEditIncomeScreenState extends State<AddEditIncomeScreen> {
                     return null;
                   },
                 ),
-
                 const SizedBox(height: 12),
-
                 _DropdownField(
                   label: 'Category',
                   value: selectedCategory,
@@ -285,9 +285,7 @@ class _AddEditIncomeScreenState extends State<AddEditIncomeScreen> {
                     });
                   },
                 ),
-
                 const SizedBox(height: 12),
-
                 _DropdownField(
                   label: 'Received By',
                   value: selectedReceivedBy,
@@ -298,9 +296,7 @@ class _AddEditIncomeScreenState extends State<AddEditIncomeScreen> {
                     });
                   },
                 ),
-
                 const SizedBox(height: 12),
-
                 _DropdownField(
                   label: 'Account',
                   value: selectedAccount,
@@ -311,9 +307,7 @@ class _AddEditIncomeScreenState extends State<AddEditIncomeScreen> {
                     });
                   },
                 ),
-
                 const SizedBox(height: 12),
-
                 InkWell(
                   onTap: _pickDate,
                   borderRadius: BorderRadius.circular(12),
@@ -327,22 +321,23 @@ class _AddEditIncomeScreenState extends State<AddEditIncomeScreen> {
                         Expanded(
                           child: Text(
                             _formatDate(selectedDate),
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
                           ),
                         ),
                         Icon(
                           Icons.calendar_month_rounded,
-                          color: theme.colorScheme.primary,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ],
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 12),
-
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 14,
@@ -351,7 +346,10 @@ class _AddEditIncomeScreenState extends State<AddEditIncomeScreen> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: theme.colorScheme.outline.withValues(alpha: 0.35),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .outline
+                          .withValues(alpha: 0.35),
                     ),
                   ),
                   child: SwitchListTile(
@@ -360,11 +358,12 @@ class _AddEditIncomeScreenState extends State<AddEditIncomeScreen> {
                     title: const Text('Recurring Income'),
                     subtitle: Text(
                       'Enable this for regular income like salary.',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withValues(
-                          alpha: 0.55,
-                        ),
-                      ),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withValues(alpha: 0.55),
+                          ),
                     ),
                     onChanged: (bool value) {
                       setState(() {
@@ -373,9 +372,7 @@ class _AddEditIncomeScreenState extends State<AddEditIncomeScreen> {
                     },
                   ),
                 ),
-
                 const SizedBox(height: 12),
-
                 TextFormField(
                   controller: notesController,
                   maxLines: 4,
@@ -385,34 +382,28 @@ class _AddEditIncomeScreenState extends State<AddEditIncomeScreen> {
                     border: OutlineInputBorder(),
                   ),
                 ),
-
                 if (controller.errorMessage != null) ...[
                   const SizedBox(height: 12),
                   _ErrorMessageBox(
                     message: controller.errorMessage!,
                   ),
                 ],
-
                 const SizedBox(height: 20),
-
-                FilledButton(
+                AppButton(
+                  text: widget.isEdit ? 'Update Income' : 'Save Income',
+                  icon: widget.isEdit
+                      ? Icons.check_rounded
+                      : Icons.save_rounded,
+                  isLoading: controller.isSubmitting,
                   onPressed: controller.isSubmitting ? null : _submit,
-                  child: controller.isSubmitting
-                      ? const SizedBox(
-                          height: 22,
-                          width: 22,
-                          child: CircularProgressIndicator(strokeWidth: 2.4),
-                        )
-                      : Text(widget.isEdit ? 'Update Income' : 'Save Income'),
                 ),
-
                 const SizedBox(height: 10),
-
-                OutlinedButton(
+                AppButton(
+                  text: 'Cancel',
+                  type: AppButtonType.outline,
                   onPressed: controller.isSubmitting
                       ? null
                       : () => Navigator.pop(context),
-                  child: const Text('Cancel'),
                 ),
               ],
             ),
@@ -497,9 +488,10 @@ class _DropdownField extends StatelessWidget {
     return DropdownButtonFormField<String>(
       value: safeValue,
       isExpanded: true,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
+        border: OutlineInputBorder(),
+      ).copyWith(
         labelText: label,
-        border: const OutlineInputBorder(),
       ),
       items: safeItems.map((String item) {
         return DropdownMenuItem<String>(

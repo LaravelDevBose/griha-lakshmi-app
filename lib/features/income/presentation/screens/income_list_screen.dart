@@ -94,7 +94,7 @@ class _IncomeListScreenState extends State<IncomeListScreen> {
     );
 
     if (saved == true) {
-      await controller.getIncomes();
+      await controller.refreshIncomes();
     }
   }
 
@@ -114,7 +114,7 @@ class _IncomeListScreenState extends State<IncomeListScreen> {
     );
 
     if (updated == true) {
-      await controller.getIncomes();
+      await controller.refreshIncomes();
     }
   }
 
@@ -179,6 +179,21 @@ class _IncomeListScreenState extends State<IncomeListScreen> {
     );
   }
 
+  Future<void> _handleRefresh() async {
+    await controller.refreshIncomes();
+
+    if (!mounted) return;
+
+    if (controller.errorMessage != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(controller.errorMessage!),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
@@ -209,14 +224,17 @@ class _IncomeListScreenState extends State<IncomeListScreen> {
           }
 
           return RefreshIndicator(
-            onRefresh: controller.getIncomes,
+            onRefresh: _handleRefresh,
             child: ListView(
               controller: scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.only(
                 top: 10,
                 bottom: 96,
               ),
               children: [
+                if (controller.isRefreshing)
+                  const _TopRefreshLoader(),
                 _IncomeSummaryCard(
                   totalIncome: controller.totalIncome,
                   totalItems: controller.incomes.length,
@@ -272,6 +290,52 @@ class _IncomeListScreenState extends State<IncomeListScreen> {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _TopRefreshLoader extends StatelessWidget {
+  const _TopRefreshLoader();
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 10,
+      ),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: theme.colorScheme.primary.withValues(alpha: 0.12),
+        ),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            height: 18,
+            width: 18,
+            child: CircularProgressIndicator(
+              strokeWidth: 2.2,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              'Refreshing income list...',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

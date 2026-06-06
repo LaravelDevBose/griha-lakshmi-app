@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/api/api.dart';
+import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_footer_nav.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../income/presentation/screens/add_edit_income_screen.dart';
@@ -421,18 +422,24 @@ class _ActionButtonsRow extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: FilledButton.icon(
+          child: AppButton(
+            text: 'Add Income',
+            icon: Icons.add_rounded,
+            type: AppButtonType.primary,
+            height: 48,
+            borderRadius: 14,
             onPressed: onAddIncome,
-            icon: const Icon(Icons.add_rounded, size: 18),
-            label: const Text('Add Income'),
           ),
         ),
         const SizedBox(width: 10),
         Expanded(
-          child: OutlinedButton.icon(
+          child: AppButton(
+            text: 'Add Expense',
+            icon: Icons.remove_rounded,
+            type: AppButtonType.outline,
+            height: 48,
+            borderRadius: 14,
             onPressed: onAddExpense,
-            icon: const Icon(Icons.remove_rounded, size: 18),
-            label: const Text('Add Expense'),
           ),
         ),
       ],
@@ -906,10 +913,12 @@ class _TransactionErrorState extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              FilledButton.icon(
+              AppButton(
+                text: 'Try Again',
+                icon: Icons.refresh_rounded,
+                isFullWidth: false,
+                height: 46,
                 onPressed: onRetry,
-                icon: const Icon(Icons.refresh_rounded),
-                label: const Text('Try Again'),
               ),
             ],
           ),

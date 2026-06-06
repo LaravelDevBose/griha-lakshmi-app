@@ -14,6 +14,7 @@ class IncomeController extends ChangeNotifier {
   final IncomeRepository _repository;
 
   bool isLoading = false;
+  bool isRefreshing = false;
   bool isLoadingMore = false;
   bool isSubmitting = false;
   bool isDeleting = false;
@@ -82,8 +83,37 @@ class IncomeController extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> refreshIncomes() async {
+    if (isRefreshing) return;
+
+    isRefreshing = true;
+    errorMessage = null;
+    successMessage = null;
+    currentPage = 1;
+    hasMorePages = true;
+    notifyListeners();
+
+    try {
+      final IncomeResponseModel response = await _repository.getIncomes(
+        page: currentPage,
+        perPage: perPage,
+      );
+
+      incomes = response.incomes;
+      totalIncome = response.summary.totalIncome;
+      hasMorePages = response.pagination.hasMorePages;
+    } on Failure catch (failure) {
+      errorMessage = failure.message;
+    } catch (_) {
+      errorMessage = 'Unable to refresh income list. Please try again.';
+    }
+
+    isRefreshing = false;
+    notifyListeners();
+  }
+
   Future<void> loadMoreIncomes() async {
-    if (isLoading || isLoadingMore || !hasMorePages) return;
+    if (isLoading || isRefreshing || isLoadingMore || !hasMorePages) return;
 
     isLoadingMore = true;
     notifyListeners();
@@ -104,7 +134,7 @@ class IncomeController extends ChangeNotifier {
       ];
       hasMorePages = response.pagination.hasMorePages;
     } catch (_) {
-      // Keep old list visible.
+      // Keep current list visible if next page fails.
     }
 
     isLoadingMore = false;
@@ -180,10 +210,7 @@ class IncomeController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final IncomeModel? oldIncome = incomes
-          .where((IncomeModel item) => item.id == id)
-          .cast<IncomeModel?>()
-          .firstOrNull;
+      final IncomeModel? oldIncome = _findIncomeById(id);
 
       final IncomeActionResponseModel response = await _repository.updateIncome(
         id: id,
@@ -235,10 +262,7 @@ class IncomeController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final IncomeModel? deletedIncome = incomes
-          .where((IncomeModel item) => item.id == id)
-          .cast<IncomeModel?>()
-          .firstOrNull;
+      final IncomeModel? deletedIncome = _findIncomeById(id);
 
       final IncomeActionResponseModel response =
           await _repository.deleteIncome(id: id);
@@ -262,5 +286,15 @@ class IncomeController extends ChangeNotifier {
     isDeleting = false;
     notifyListeners();
     return false;
+  }
+
+  IncomeModel? _findIncomeById(int id) {
+    for (final IncomeModel income in incomes) {
+      if (income.id == id) {
+        return income;
+      }
+    }
+
+    return null;
   }
 }
