@@ -274,7 +274,6 @@ class _QuickActionItem extends StatefulWidget {
     required this.subtitle,
     required this.icon,
     required this.color,
-    this.routeName,
     this.pageBuilder,
     this.onCompleted,
   });
@@ -282,7 +281,6 @@ class _QuickActionItem extends StatefulWidget {
   final String title;
   final String subtitle;
   final IconData icon;
-  final String? routeName;
   final WidgetBuilder? pageBuilder;
   final Color color;
   final VoidCallback? onCompleted;
@@ -312,18 +310,6 @@ class _QuickActionItemState extends State<_QuickActionItem> {
 
       return;
     }
-
-    final String? routeName = widget.routeName;
-
-    if (routeName == null || routeName.isEmpty) {
-      return;
-    }
-
-    final String? currentRoute = ModalRoute.of(context)?.settings.name;
-
-    if (currentRoute == routeName) return;
-
-    await navigator.pushNamed(routeName);
   }
 
   @override
