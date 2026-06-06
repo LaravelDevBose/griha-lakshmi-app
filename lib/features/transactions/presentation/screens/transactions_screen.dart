@@ -5,6 +5,7 @@ import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_footer_nav.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../income/presentation/screens/add_edit_income_screen.dart';
+import '../../../expense/presentation/screens/add_edit_expense_screen.dart';
 import '../../data/datasources/transaction_remote_datasource.dart';
 import '../../data/models/transaction_model.dart';
 import '../../data/repositories/transaction_repository.dart';
@@ -112,14 +113,17 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       await controller.getTransactions();
     }
   }
-
-  void _showComingSoonMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
+  Future<void> _openAddExpenseScreen() async {
+    final bool? saved = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const AddEditExpenseScreen(),
       ),
     );
+
+    if (saved == true) {
+      await controller.getTransactions();
+    }
   }
 
   @override
@@ -169,9 +173,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 const SizedBox(height: 12),
                 _ActionButtonsRow(
                   onAddIncome: _openAddIncomeScreen,
-                  onAddExpense: () {
-                    _showComingSoonMessage('Add Expense screen coming next');
-                  },
+                  onAddExpense: _openAddExpenseScreen,
                 ),
                 const SizedBox(height: 14),
                 _SectionTitle(

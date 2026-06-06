@@ -3,30 +3,30 @@ import 'package:flutter/material.dart';
 import '../../../../core/api/api.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_scaffold.dart';
-import '../../data/datasources/income_remote_datasource.dart';
-import '../../data/models/income_model.dart';
-import '../../data/repositories/income_repository.dart';
-import '../controllers/income_controller.dart';
-import 'add_edit_income_screen.dart';
+import '../../data/datasources/expense_remote_datasource.dart';
+import '../../data/models/expense_model.dart';
+import '../../data/repositories/expense_repository.dart';
+import '../controllers/expense_controller.dart';
+import 'add_edit_expense_screen.dart';
 
-class IncomeListScreen extends StatefulWidget {
-  const IncomeListScreen({super.key});
+class ExpenseListScreen extends StatefulWidget {
+  const ExpenseListScreen({super.key});
 
   @override
-  State<IncomeListScreen> createState() => _IncomeListScreenState();
+  State<ExpenseListScreen> createState() => _ExpenseListScreenState();
 }
 
-class _IncomeListScreenState extends State<IncomeListScreen> {
-  late final IncomeController controller;
+class _ExpenseListScreenState extends State<ExpenseListScreen> {
+  late final ExpenseController controller;
   late final ScrollController scrollController;
 
   @override
   void initState() {
     super.initState();
 
-    controller = IncomeController(
-      repository: IncomeRepository(
-        remoteDataSource: IncomeRemoteDataSource(
+    controller = ExpenseController(
+      repository: ExpenseRepository(
+        remoteDataSource: ExpenseRemoteDataSource(
           apiClient: ApiClient(),
         ),
       ),
@@ -35,7 +35,7 @@ class _IncomeListScreenState extends State<IncomeListScreen> {
     scrollController = ScrollController();
     scrollController.addListener(_onScroll);
 
-    controller.getIncomes();
+    controller.getExpenses();
   }
 
   @override
@@ -53,7 +53,7 @@ class _IncomeListScreenState extends State<IncomeListScreen> {
     final double maxPosition = scrollController.position.maxScrollExtent;
 
     if (currentPosition >= maxPosition - 240) {
-      controller.loadMoreIncomes();
+      controller.loadMoreExpenses();
     }
   }
 
@@ -80,12 +80,12 @@ class _IncomeListScreenState extends State<IncomeListScreen> {
     return '${date.day} ${months[date.month - 1]}, ${date.year}';
   }
 
-  Future<void> _openAddIncome() async {
+  Future<void> _openAddExpense() async {
     final bool? saved = await Navigator.push<bool>(
       context,
       MaterialPageRoute(
         builder: (_) {
-          return AddEditIncomeScreen(
+          return AddEditExpenseScreen(
             controller: controller,
           );
         },
@@ -93,40 +93,40 @@ class _IncomeListScreenState extends State<IncomeListScreen> {
     );
 
     if (saved == true) {
-      await controller.refreshIncomes();
+      await controller.refreshExpenses();
     }
   }
 
-  Future<void> _openEditIncome(IncomeModel income) async {
+  Future<void> _openEditExpense(ExpenseModel expense) async {
     Navigator.pop(context);
 
     final bool? updated = await Navigator.push<bool>(
       context,
       MaterialPageRoute(
         builder: (_) {
-          return AddEditIncomeScreen(
+          return AddEditExpenseScreen(
             controller: controller,
-            income: income,
+            expense: expense,
           );
         },
       ),
     );
 
     if (updated == true) {
-      await controller.refreshIncomes();
+      await controller.refreshExpenses();
     }
   }
 
-  Future<void> _confirmDeleteIncome(IncomeModel income) async {
+  Future<void> _confirmDeleteExpense(ExpenseModel expense) async {
     Navigator.pop(context);
 
     final bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: const Text('Delete Income?'),
+          title: const Text('Delete Expense?'),
           content: Text(
-            'Are you sure you want to delete "${income.title}"?',
+            'Are you sure you want to delete "${expense.title}"?',
           ),
           actions: [
             TextButton(
@@ -144,7 +144,7 @@ class _IncomeListScreenState extends State<IncomeListScreen> {
 
     if (confirmed != true) return;
 
-    final bool deleted = await controller.deleteIncome(income.id);
+    final bool deleted = await controller.deleteExpense(expense.id);
 
     if (!mounted) return;
 
@@ -152,34 +152,34 @@ class _IncomeListScreenState extends State<IncomeListScreen> {
       SnackBar(
         content: Text(
           deleted
-              ? controller.successMessage ?? 'Income deleted successfully'
-              : controller.errorMessage ?? 'Unable to delete income',
+              ? controller.successMessage ?? 'Expense deleted successfully'
+              : controller.errorMessage ?? 'Unable to delete expense',
         ),
         behavior: SnackBarBehavior.floating,
       ),
     );
   }
 
-  void _showIncomeDetails(IncomeModel income) {
+  void _showExpenseDetails(ExpenseModel expense) {
     showModalBottomSheet(
       context: context,
       showDragHandle: true,
       isScrollControlled: true,
       backgroundColor: Theme.of(context).colorScheme.surface,
       builder: (BuildContext bottomSheetContext) {
-        return _IncomeDetailsBottomSheet(
-          income: income,
+        return _ExpenseDetailsBottomSheet(
+          expense: expense,
           formatAmount: _formatAmount,
           formatDate: _formatDate,
-          onEdit: () => _openEditIncome(income),
-          onDelete: () => _confirmDeleteIncome(income),
+          onEdit: () => _openEditExpense(expense),
+          onDelete: () => _confirmDeleteExpense(expense),
         );
       },
     );
   }
 
   Future<void> _handleRefresh() async {
-    await controller.refreshIncomes();
+    await controller.refreshExpenses();
 
     if (!mounted) return;
 
@@ -202,9 +202,9 @@ class _IncomeListScreenState extends State<IncomeListScreen> {
       showQuickActionFab: false,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: _openAddIncome,
+        onPressed: _openAddExpense,
         icon: const Icon(Icons.add_rounded),
-        label: const Text('Income'),
+        label: const Text('Expense'),
       ),
       body: AnimatedBuilder(
         animation: controller,
@@ -215,10 +215,10 @@ class _IncomeListScreenState extends State<IncomeListScreen> {
             );
           }
 
-          if (controller.errorMessage != null && controller.incomes.isEmpty) {
-            return _IncomeErrorState(
+          if (controller.errorMessage != null && controller.expenses.isEmpty) {
+            return _ExpenseErrorState(
               message: controller.errorMessage!,
-              onRetry: controller.getIncomes,
+              onRetry: controller.getExpenses,
             );
           }
 
@@ -232,29 +232,28 @@ class _IncomeListScreenState extends State<IncomeListScreen> {
                 bottom: 96,
               ),
               children: [
-                if (controller.isRefreshing)
-                  const _TopRefreshLoader(),
-                _IncomeSummaryCard(
-                  totalIncome: controller.totalIncome,
-                  totalItems: controller.incomes.length,
+                if (controller.isRefreshing) const _TopRefreshLoader(),
+                _ExpenseSummaryCard(
+                  totalExpense: controller.totalExpense,
+                  totalItems: controller.expenses.length,
                   formatAmount: _formatAmount,
                 ),
                 const SizedBox(height: 16),
                 _SectionTitle(
-                  title: 'Income List',
-                  trailingText: '${controller.incomes.length} found',
+                  title: 'Expense List',
+                  trailingText: '${controller.expenses.length} found',
                 ),
                 const SizedBox(height: 8),
-                if (controller.incomes.isEmpty)
-                  const _EmptyIncomeState()
+                if (controller.expenses.isEmpty)
+                  const _EmptyExpenseState()
                 else
-                  ...controller.incomes.map(
-                    (IncomeModel income) {
-                      return _IncomeTile(
-                        income: income,
+                  ...controller.expenses.map(
+                    (ExpenseModel expense) {
+                      return _ExpenseTile(
+                        expense: expense,
                         formatAmount: _formatAmount,
                         formatDate: _formatDate,
-                        onTap: () => _showIncomeDetails(income),
+                        onTap: () => _showExpenseDetails(expense),
                       );
                     },
                   ),
@@ -269,12 +268,12 @@ class _IncomeListScreenState extends State<IncomeListScreen> {
                       ),
                     ),
                   ),
-                if (!controller.hasMorePages && controller.incomes.isNotEmpty)
+                if (!controller.hasMorePages && controller.expenses.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
                     child: Center(
                       child: Text(
-                        'No more income records',
+                        'No more expense records',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Theme.of(context)
                                   .colorScheme
@@ -308,10 +307,10 @@ class _TopRefreshLoader extends StatelessWidget {
         vertical: 10,
       ),
       decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withValues(alpha: 0.08),
+        color: theme.colorScheme.error.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: theme.colorScheme.primary.withValues(alpha: 0.12),
+          color: theme.colorScheme.error.withValues(alpha: 0.12),
         ),
       ),
       child: Row(
@@ -321,15 +320,15 @@ class _TopRefreshLoader extends StatelessWidget {
             width: 18,
             child: CircularProgressIndicator(
               strokeWidth: 2.2,
-              color: theme.colorScheme.primary,
+              color: theme.colorScheme.error,
             ),
           ),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              'Refreshing income list...',
+              'Refreshing expense list...',
               style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.primary,
+                color: theme.colorScheme.error,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -340,29 +339,29 @@ class _TopRefreshLoader extends StatelessWidget {
   }
 }
 
-class _IncomeSummaryCard extends StatelessWidget {
-  const _IncomeSummaryCard({
-    required this.totalIncome,
+class _ExpenseSummaryCard extends StatelessWidget {
+  const _ExpenseSummaryCard({
+    required this.totalExpense,
     required this.totalItems,
     required this.formatAmount,
   });
 
-  final double totalIncome;
+  final double totalExpense;
   final int totalItems;
   final String Function(double amount) formatAmount;
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    const Color incomeColor = Colors.green;
+    const Color expenseColor = Colors.red;
 
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: incomeColor.withValues(alpha: 0.10),
+        color: expenseColor.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: incomeColor.withValues(alpha: 0.18),
+          color: expenseColor.withValues(alpha: 0.18),
         ),
       ),
       child: Row(
@@ -371,12 +370,12 @@ class _IncomeSummaryCard extends StatelessWidget {
             height: 52,
             width: 52,
             decoration: BoxDecoration(
-              color: incomeColor.withValues(alpha: 0.14),
+              color: expenseColor.withValues(alpha: 0.14),
               borderRadius: BorderRadius.circular(18),
             ),
             child: const Icon(
-              Icons.arrow_downward_rounded,
-              color: incomeColor,
+              Icons.arrow_upward_rounded,
+              color: expenseColor,
             ),
           ),
           const SizedBox(width: 14),
@@ -385,15 +384,15 @@ class _IncomeSummaryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  formatAmount(totalIncome),
+                  formatAmount(totalExpense),
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w900,
-                    color: incomeColor,
+                    color: expenseColor,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Total income from $totalItems records',
+                  'Total expense from $totalItems records',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.62),
                     fontWeight: FontWeight.w600,
@@ -408,15 +407,15 @@ class _IncomeSummaryCard extends StatelessWidget {
   }
 }
 
-class _IncomeTile extends StatelessWidget {
-  const _IncomeTile({
-    required this.income,
+class _ExpenseTile extends StatelessWidget {
+  const _ExpenseTile({
+    required this.expense,
     required this.formatAmount,
     required this.formatDate,
     required this.onTap,
   });
 
-  final IncomeModel income;
+  final ExpenseModel expense;
   final String Function(double amount) formatAmount;
   final String Function(DateTime date) formatDate;
   final VoidCallback onTap;
@@ -424,7 +423,7 @@ class _IncomeTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    const Color incomeColor = Colors.green;
+    const Color expenseColor = Colors.red;
 
     return InkWell(
       onTap: onTap,
@@ -452,13 +451,13 @@ class _IncomeTile extends StatelessWidget {
               height: 36,
               width: 36,
               decoration: BoxDecoration(
-                color: incomeColor.withValues(alpha: 0.10),
+                color: expenseColor.withValues(alpha: 0.10),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
-                Icons.arrow_downward_rounded,
+                Icons.arrow_upward_rounded,
                 size: 19,
-                color: incomeColor,
+                color: expenseColor,
               ),
             ),
             const SizedBox(width: 9),
@@ -467,7 +466,7 @@ class _IncomeTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    income.title,
+                    expense.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodyMedium?.copyWith(
@@ -476,7 +475,7 @@ class _IncomeTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '${income.category} • ${income.receivedBy} • ${income.account}',
+                    '${expense.category} • ${expense.paidBy} • ${expense.paymentAccount}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.labelSmall?.copyWith(
@@ -494,15 +493,15 @@ class _IncomeTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '+${formatAmount(income.amount)}',
+                  '-${formatAmount(expense.amount)}',
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w900,
-                    color: incomeColor,
+                    color: expenseColor,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  formatDate(income.date),
+                  formatDate(expense.date),
                   style: theme.textTheme.labelSmall?.copyWith(
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.44),
                     fontWeight: FontWeight.w500,
@@ -517,16 +516,16 @@ class _IncomeTile extends StatelessWidget {
   }
 }
 
-class _IncomeDetailsBottomSheet extends StatelessWidget {
-  const _IncomeDetailsBottomSheet({
-    required this.income,
+class _ExpenseDetailsBottomSheet extends StatelessWidget {
+  const _ExpenseDetailsBottomSheet({
+    required this.expense,
     required this.formatAmount,
     required this.formatDate,
     required this.onEdit,
     required this.onDelete,
   });
 
-  final IncomeModel income;
+  final ExpenseModel expense;
   final String Function(double amount) formatAmount;
   final String Function(DateTime date) formatDate;
   final VoidCallback onEdit;
@@ -535,7 +534,7 @@ class _IncomeDetailsBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    const Color incomeColor = Colors.green;
+    const Color expenseColor = Colors.red;
 
     return SafeArea(
       child: Padding(
@@ -551,10 +550,10 @@ class _IncomeDetailsBottomSheet extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
-                color: incomeColor.withValues(alpha: 0.10),
+                color: expenseColor.withValues(alpha: 0.10),
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
-                  color: incomeColor.withValues(alpha: 0.14),
+                  color: expenseColor.withValues(alpha: 0.14),
                 ),
               ),
               child: Column(
@@ -563,17 +562,17 @@ class _IncomeDetailsBottomSheet extends StatelessWidget {
                     height: 52,
                     width: 52,
                     decoration: BoxDecoration(
-                      color: incomeColor.withValues(alpha: 0.14),
+                      color: expenseColor.withValues(alpha: 0.14),
                       borderRadius: BorderRadius.circular(18),
                     ),
                     child: const Icon(
-                      Icons.arrow_downward_rounded,
-                      color: incomeColor,
+                      Icons.arrow_upward_rounded,
+                      color: expenseColor,
                     ),
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    income.title,
+                    expense.title,
                     textAlign: TextAlign.center,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w900,
@@ -581,9 +580,9 @@ class _IncomeDetailsBottomSheet extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '+${formatAmount(income.amount)}',
+                    '-${formatAmount(expense.amount)}',
                     style: theme.textTheme.headlineSmall?.copyWith(
-                      color: incomeColor,
+                      color: expenseColor,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -591,16 +590,15 @@ class _IncomeDetailsBottomSheet extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 14),
-            _DetailRow(label: 'Category', value: income.category),
-            _DetailRow(label: 'Received By', value: income.receivedBy),
-            _DetailRow(label: 'Account', value: income.account),
-            _DetailRow(label: 'Date', value: formatDate(income.date)),
-            _DetailRow(
-              label: 'Recurring',
-              value: income.isRecurring ? 'Yes' : 'No',
-            ),
-            if (income.notes != null && income.notes!.trim().isNotEmpty)
-              _DetailRow(label: 'Notes', value: income.notes!),
+            _DetailRow(label: 'Category', value: expense.category),
+            _DetailRow(label: 'Paid By', value: expense.paidBy),
+            _DetailRow(label: 'Payment Account', value: expense.paymentAccount),
+            _DetailRow(label: 'Date', value: formatDate(expense.date)),
+            if (expense.receiptImage != null &&
+                expense.receiptImage!.trim().isNotEmpty)
+              _DetailRow(label: 'Receipt', value: expense.receiptImage!),
+            if (expense.notes != null && expense.notes!.trim().isNotEmpty)
+              _DetailRow(label: 'Notes', value: expense.notes!),
             const SizedBox(height: 14),
             Row(
               children: [
@@ -719,8 +717,8 @@ class _SectionTitle extends StatelessWidget {
   }
 }
 
-class _EmptyIncomeState extends StatelessWidget {
-  const _EmptyIncomeState();
+class _EmptyExpenseState extends StatelessWidget {
+  const _EmptyExpenseState();
 
   @override
   Widget build(BuildContext context) {
@@ -737,20 +735,20 @@ class _EmptyIncomeState extends StatelessWidget {
       child: Column(
         children: [
           Icon(
-            Icons.savings_rounded,
+            Icons.receipt_long_rounded,
             size: 42,
             color: theme.colorScheme.onSurface.withValues(alpha: 0.35),
           ),
           const SizedBox(height: 10),
           Text(
-            'No income found',
+            'No expense found',
             style: theme.textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.w800,
             ),
           ),
           const SizedBox(height: 4),
           Text(
-            'Add your first income record to start tracking.',
+            'Add your first expense record to start tracking.',
             textAlign: TextAlign.center,
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurface.withValues(alpha: 0.55),
@@ -762,8 +760,8 @@ class _EmptyIncomeState extends StatelessWidget {
   }
 }
 
-class _IncomeErrorState extends StatelessWidget {
-  const _IncomeErrorState({
+class _ExpenseErrorState extends StatelessWidget {
+  const _ExpenseErrorState({
     required this.message,
     required this.onRetry,
   });
@@ -797,7 +795,7 @@ class _IncomeErrorState extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                'Unable to load income',
+                'Unable to load expense',
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w800,
                 ),

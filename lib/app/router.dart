@@ -6,10 +6,15 @@ import '../features/auth/presentation/screens/login_screen.dart';
 // Later create these screens and uncomment imports
 // import '../features/auth/presentation/screens/register_screen.dart';
 import '../features/dashboard/presentation/screens/dashboard_screen.dart';
+
 import '../features/transactions/presentation/screens/transactions_screen.dart';
-// import '../features/expense/presentation/screens/add_expense_screen.dart';
+
+import '../features/expense/presentation/screens/expense_list_screen.dart';
+import '../features/expense/presentation/screens/add_edit_expense_screen.dart';
+
 import '../features/income/presentation/screens/income_list_screen.dart';
 import '../features/income/presentation/screens/add_edit_income_screen.dart';
+
 // import '../features/bills/presentation/screens/bills_screen.dart';
 // import '../features/reports/presentation/screens/reports_screen.dart';
 // import '../features/profile/presentation/screens/profile_screen.dart';
@@ -25,10 +30,14 @@ class AppRoutes {
   static const String register = '/register';
   static const String familySetup = '/family-setup';
   static const String home = '/dashboard';
+
   static const String transactions = '/transactions';
-  static const String addExpense = '/add-expense';
   static const String incomes = '/incomes';
   static const String addIncome = '/add-income';
+
+  static const String expense = '/expense';
+  static const String addExpense = '/add-expense';
+
   static const String addPurchase = '/add-purchase';
   static const String addReminder = '/add-reminder';
   static const String bills = '/bills';
@@ -76,20 +85,22 @@ class AppRouter {
           settings,
           const AddEditIncomeScreen(),
         );
+      case AppRoutes.expense:
+        return _buildRoute(
+          settings,
+          const ExpenseListScreen(),
+        );
+      case AppRoutes.addExpense:
+        return _buildRoute(
+          settings,
+          const AddEditExpenseScreen(),
+        );
       // Add these after creating screens
       /*
       case AppRoutes.register:
         return _buildRoute(
           settings,
           const RegisterScreen(),
-        );
-
-      
-
-      case AppRoutes.addExpense:
-        return _buildRoute(
-          settings,
-          const AddExpenseScreen(),
         );
 
       case AppRoutes.bills:
