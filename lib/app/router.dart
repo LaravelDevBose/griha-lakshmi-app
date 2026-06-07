@@ -26,8 +26,9 @@ import '../features/budgets/presentation/screens/budget_screen.dart';
 import '../features/reminders/presentation/screens/reminder_list_screen.dart';
 
 // import '../features/reports/presentation/screens/reports_screen.dart';
-// import '../features/profile/presentation/screens/profile_screen.dart';
 
+import '../features/more/presentation/screens/more_screen.dart';
+import '../features/profile/presentation/screens/profile_screen.dart';
 // Development Preview
 import '../features/dev_preview/presentation/screens/widget_preview_screen.dart';
 
@@ -154,6 +155,14 @@ class AppRouter {
         return _buildRoute(
           settings,
           const ReminderListScreen(),
+        );
+      case AppRoutes.more:
+        return MaterialPageRoute(
+          builder: (_) => const MoreScreen(),
+        );
+      case AppRoutes.profile:
+        return MaterialPageRoute(
+          builder: (_) => const ProfileScreen(),
         );
       // Add these after creating screens
       /*
