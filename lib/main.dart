@@ -1,34 +1,39 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 
 import 'app/app.dart';
-import 'package:flutter/material.dart';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:firebase_messaging/firebase_messaging.dart';
-// import 'core/notifications/local_notification_service.dart';
-// import 'core/notifications/notification_service.dart';
-// import 'firebase_options.dart';
+import 'core/notifications/notification_service.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    debugPrint(details.exceptionAsString());
+    debugPrintStack(stackTrace: details.stack);
+  };
 
-  // await NotificationService.initialize(
-  //   onLocalNotificationTap: (LocalNotificationPayload payload) {
-  //     // Later we can add global navigation here.
-  //     // Example:
-  //     // payload.type
-  //     // payload.relatedType
-  //     // payload.relatedId
-  //   },
-  //   onRemoteNotificationTap: (RemoteMessage message) {
-  //     // Later we can add global navigation here.
-  //     // Example:
-  //     // message.data['related_type']
-  //     // message.data['related_id']
-  //   },
-  // );
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+    debugPrint('Firebase initialized successfully');
+  } catch (error, stackTrace) {
+    debugPrint('Firebase initialization failed: $error');
+    debugPrintStack(stackTrace: stackTrace);
+  }
 
   runApp(const FamilyFundApp());
+
+  WidgetsBinding.instance.addPostFrameCallback((_) async {
+    try {
+      await NotificationService.initialize();
+      debugPrint('Notification service initialized successfully');
+    } catch (error, stackTrace) {
+      debugPrint('Notification service initialization failed: $error');
+      debugPrintStack(stackTrace: stackTrace);
+    }
+  });
 }

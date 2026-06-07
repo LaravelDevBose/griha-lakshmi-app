@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -34,21 +35,35 @@ class NotificationService {
 
     await _localNotificationService.requestPermission();
 
-    await _firebaseNotificationService.initialize(
-      onForegroundMessage: (RemoteMessage message) async {
-        await _localNotificationService.showRemoteMessage(message);
-      },
-      onNotificationOpened: onRemoteNotificationTap,
-    );
+    if (Firebase.apps.isNotEmpty) {
+      await _firebaseNotificationService.initialize(
+        onForegroundMessage: (RemoteMessage message) async {
+          await _localNotificationService.showRemoteMessage(message);
+        },
+        onNotificationOpened: onRemoteNotificationTap,
+      );
+    } else {
+      debugPrint(
+        'Remote push notification skipped because Firebase is not initialized.',
+      );
+    }
 
     _isInitialized = true;
   }
 
   static Future<String?> getFcmToken() {
+    if (Firebase.apps.isEmpty) {
+      return Future<String?>.value(null);
+    }
+
     return _firebaseNotificationService.getToken();
   }
 
   static Stream<String> onFcmTokenRefresh() {
+    if (Firebase.apps.isEmpty) {
+      return const Stream<String>.empty();
+    }
+
     return _firebaseNotificationService.onTokenRefresh();
   }
 

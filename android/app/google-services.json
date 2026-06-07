@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "670991831540",
+    "project_id": "grihalakshmi-financeplanner",
+    "storage_bucket": "grihalakshmi-financeplanner.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:670991831540:android:d16ce73edcf282877da9a1",
+        "android_client_info": {
+          "package_name": "com.devbose.grihalakshmi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmKCxXuQfspAJ3ewZ-dZ-CHvIr95T7V_g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

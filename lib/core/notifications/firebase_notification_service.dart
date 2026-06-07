@@ -1,10 +1,12 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // Firebase should already be initialized from main.dart.
-  // Later you can save background notification data locally if needed.
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp();
+  }
 }
 
 class FirebaseNotificationService {
@@ -13,7 +15,7 @@ class FirebaseNotificationService {
   static final FirebaseNotificationService instance =
       FirebaseNotificationService._();
 
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  FirebaseMessaging get _firebaseMessaging => FirebaseMessaging.instance;
 
   bool _isInitialized = false;
 
@@ -22,6 +24,18 @@ class FirebaseNotificationService {
     void Function(RemoteMessage message)? onNotificationOpened,
   }) async {
     if (_isInitialized) {
+      return;
+    }
+
+    if (kIsWeb) {
+      _isInitialized = true;
+      return;
+    }
+
+    if (Firebase.apps.isEmpty) {
+      debugPrint(
+        'FirebaseNotificationService skipped because Firebase is not initialized.',
+      );
       return;
     }
 
@@ -50,7 +64,7 @@ class FirebaseNotificationService {
   }
 
   Future<void> requestPermission() async {
-    if (kIsWeb) {
+    if (kIsWeb || Firebase.apps.isEmpty) {
       return;
     }
 
@@ -63,18 +77,34 @@ class FirebaseNotificationService {
   }
 
   Future<String?> getToken() async {
+    if (kIsWeb || Firebase.apps.isEmpty) {
+      return null;
+    }
+
     return _firebaseMessaging.getToken();
   }
 
   Stream<String> onTokenRefresh() {
+    if (Firebase.apps.isEmpty) {
+      return const Stream<String>.empty();
+    }
+
     return _firebaseMessaging.onTokenRefresh;
   }
 
   Future<void> subscribeToTopic(String topic) async {
+    if (kIsWeb || Firebase.apps.isEmpty) {
+      return;
+    }
+
     await _firebaseMessaging.subscribeToTopic(topic);
   }
 
   Future<void> unsubscribeFromTopic(String topic) async {
+    if (kIsWeb || Firebase.apps.isEmpty) {
+      return;
+    }
+
     await _firebaseMessaging.unsubscribeFromTopic(topic);
   }
 }

@@ -1,4 +1,4 @@
-package com.example.financeplanner
+package com.devbose.grihalakshmi
 
 import io.flutter.embedding.android.FlutterActivity
 
