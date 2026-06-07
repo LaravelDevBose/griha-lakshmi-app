@@ -29,6 +29,8 @@ import '../features/reminders/presentation/screens/reminder_list_screen.dart';
 
 import '../features/more/presentation/screens/more_screen.dart';
 import '../features/profile/presentation/screens/profile_screen.dart';
+import '../features/accounts/presentation/screens/account_list_screen.dart';
+
 // Development Preview
 import '../features/dev_preview/presentation/screens/widget_preview_screen.dart';
 
@@ -62,9 +64,11 @@ class AppRoutes {
 
   static const String reports = '/reports';
   static const String savingsGoal = '/savings-goal';
-  static const String profile = '/profile';
+
 
   static const String more = '/more';
+    static const String profile = '/profile';
+  static const String accounts = '/accounts';
 
   static const String widgetPreview = '/widget-preview';
 }
@@ -163,6 +167,11 @@ class AppRouter {
       case AppRoutes.profile:
         return MaterialPageRoute(
           builder: (_) => const ProfileScreen(),
+        );
+      case AppRoutes.accounts:
+        return _buildRoute(
+          settings,
+          const AccountListScreen(),
         );
       // Add these after creating screens
       /*

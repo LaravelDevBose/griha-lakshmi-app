@@ -98,4 +98,11 @@ class ApiEndpoints {
   static String markNotificationAsRead(int id) => '/notifications/$id/mark-as-read';
 
   static const String transactions = '/transactions';
+
+  // Bank Accounts
+  static const String accounts = '/accounts';
+  static const String storeAccount = '/accounts';
+  static String updateAccount(int id) => '/accounts/$id';
+  static String deactivateAccount(int id) => '/accounts/$id/deactivate';
+  static String setDefaultAccount(int id) => '/accounts/$id/set-default';
 }

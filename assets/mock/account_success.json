@@ -1,0 +1,86 @@
+{
+  "success": true,
+  "message": "Account list loaded successfully",
+  "status_code": 200,
+  "code": "ACCOUNT_LIST_LOADED",
+  "data": {
+    "summary": {
+      "total_accounts": 5,
+      "active_accounts": 5,
+      "total_balance": 186500
+    },
+    "pagination": {
+      "current_page": 1,
+      "per_page": 10,
+      "total": 5,
+      "last_page": 1
+    },
+    "accounts": [
+      {
+        "id": 1,
+        "account_name": "Cash in Hand",
+        "account_type": "cash",
+        "institution_name": "",
+        "account_number_last_four": "",
+        "opening_balance": 20000,
+        "current_balance": 18500,
+        "currency": "BDT",
+        "is_default": true,
+        "status": "active",
+        "notes": "Main family cash account"
+      },
+      {
+        "id": 2,
+        "account_name": "DBBL Savings",
+        "account_type": "bank",
+        "institution_name": "Dutch-Bangla Bank",
+        "account_number_last_four": "2145",
+        "opening_balance": 100000,
+        "current_balance": 92500,
+        "currency": "BDT",
+        "is_default": false,
+        "status": "active",
+        "notes": "Main bank account"
+      },
+      {
+        "id": 3,
+        "account_name": "bKash Personal",
+        "account_type": "mobile_banking",
+        "institution_name": "bKash",
+        "account_number_last_four": "7890",
+        "opening_balance": 15000,
+        "current_balance": 12000,
+        "currency": "BDT",
+        "is_default": false,
+        "status": "active",
+        "notes": ""
+      },
+      {
+        "id": 4,
+        "account_name": "Nagad Wallet",
+        "account_type": "wallet",
+        "institution_name": "Nagad",
+        "account_number_last_four": "4411",
+        "opening_balance": 8000,
+        "current_balance": 4500,
+        "currency": "BDT",
+        "is_default": false,
+        "status": "active",
+        "notes": ""
+      },
+      {
+        "id": 5,
+        "account_name": "DBBL Visa Card",
+        "account_type": "card",
+        "institution_name": "Dutch-Bangla Bank",
+        "account_number_last_four": "4821",
+        "opening_balance": 60000,
+        "current_balance": 59000,
+        "currency": "BDT",
+        "is_default": false,
+        "status": "active",
+        "notes": "Only last four digits stored"
+      }
+    ]
+  }
+}

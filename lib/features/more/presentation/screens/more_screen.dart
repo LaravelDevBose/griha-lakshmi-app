@@ -154,11 +154,7 @@ class MoreScreen extends StatelessWidget {
                 icon: Icons.account_balance_wallet_rounded,
                 title: 'Accounts',
                 subtitle: 'Cash, bank, mobile banking, and card accounts',
-                onTap: () => _openComingSoon(
-                  context,
-                  title: 'Accounts',
-                  icon: Icons.account_balance_wallet_rounded,
-                ),
+                onTap: () => Navigator.pushNamed(context, AppRoutes.accounts),
               ),
               _MoreMenuTile(
                 icon: Icons.category_rounded,
